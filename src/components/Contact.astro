@@ -36,8 +36,9 @@
                     
                     <div>
                         <h4 class="font-body text-xs uppercase tracking-[0.3em] text-red-500 font-bold mb-3">Availability</h4>
-                        <p class="font-body text-lg text-neutral-300">Open for freelance & collaborations</p>
+                        <p class="font-body text-lg text-neutral-300">Open for freelance & remote work</p>
                     </div>
+                    
                     
                     <div>
                         <h4 class="font-body text-xs uppercase tracking-[0.3em] text-red-500 font-bold mb-3">Contact</h4>
@@ -63,9 +64,51 @@
         </div>
         
         <div class="flex space-x-6">
-            <a href="#" class="font-body text-sm text-neutral-400 hover:text-white transition-colors uppercase tracking-wider">LinkedIn</a>
-            <a href="#" class="font-body text-sm text-neutral-400 hover:text-white transition-colors uppercase tracking-wider">Behance</a>
-            <a href="#" class="font-body text-sm text-neutral-400 hover:text-white transition-colors uppercase tracking-wider">Instagram</a>
+            <a href="https://www.linkedin.com/in/avishka-udara/" class="font-body text-sm text-neutral-400 hover:text-white transition-colors uppercase tracking-wider">LinkedIn</a>
+            <a href="https://t.me/Avishka_udara" class="font-body text-sm text-neutral-400 hover:text-white transition-colors uppercase tracking-wider">Telegram</a>
+            <a href="https://www.instagram.com/aviudr?igsh=MWwydnRxbHFjNnMxdw%3D%3D&utm_source=qr" class="font-body text-sm text-neutral-400 hover:text-white transition-colors uppercase tracking-wider">Instagram</a>
         </div>
     </div>
 </section>
+
+<style>
+    /* Social link particles */
+    .social-link-wrapper {
+        position: relative;
+    }
+    
+    .particle {
+        animation: particle-float 3s ease-in-out infinite;
+        opacity: 0;
+    }
+    
+    .particle-1 {
+        top: -8px;
+        left: -5px;
+        animation-delay: 0s;
+    }
+    
+    .particle-2 {
+        top: -10px;
+        right: -5px;
+        animation-delay: 1.5s;
+    }
+    
+    @keyframes particle-float {
+        0% {
+            opacity: 0;
+            transform: translateY(0) scale(1);
+        }
+        20% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+            transform: translateY(-20px) scale(0);
+        }
+    }
+    
+    .social-link-wrapper:hover .particle {
+        animation-duration: 1.5s;
+    }
+</style>

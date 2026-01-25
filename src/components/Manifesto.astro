@@ -41,6 +41,43 @@
         </h2>
     </div>
     
+    <!-- Gallery CTA Button - Fixed Top Right -->
+    <a href="/gallery" class="gallery-cta-wrapper fixed top-8 right-8 z-50 opacity-0">
+        <div class="gallery-cta group relative">
+            <!-- Animated particles -->
+            <div class="particle particle-1 absolute w-2 h-2 rounded-full bg-red-500/60"></div>
+            <div class="particle particle-2 absolute w-2 h-2 rounded-full bg-red-500/60"></div>
+            <div class="particle particle-3 absolute w-2 h-2 rounded-full bg-red-500/60"></div>
+            
+            <!-- Main button -->
+            <div class="relative flex items-center gap-3 px-6 py-3 bg-black/60 backdrop-blur-xl rounded-full border border-white/20 group-hover:border-red-500 group-hover:bg-red-500/10 transition-all duration-500 group-hover:scale-105">
+                <!-- Pulse ring on hover -->
+                <div class="absolute inset-0 rounded-full bg-red-500/30 scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 blur-md transition-all duration-700"></div>
+                
+                <div class="relative flex items-center gap-3">
+                    <!-- Icon -->
+                    <div class="w-6 h-6 relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-red-500 to-red-600 rounded-full animate-pulse"></div>
+                        <div class="absolute inset-0.5 bg-black rounded-full flex items-center justify-center">
+                            <div class="w-2 h-2 bg-red-500 rounded-full group-hover:animate-ping"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Text -->
+                    <span class="cta-text font-body text-xs uppercase tracking-[0.2em] text-white group-hover:text-red-400 transition-colors font-medium">
+                        View My Works
+                    </span>
+                    
+                    <!-- Arrow -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-white/60 group-hover:text-red-500 group-hover:translate-x-1 transition-all">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </a>
+    
     <div class="absolute bottom-12 left-0 right-0 text-center opacity-0 scroll-hint">
         <p class="font-body text-sm uppercase tracking-widest text-neutral-500">↓ Scroll to Begin</p>
     </div>
@@ -100,7 +137,58 @@
         repeat: -1,
         yoyo: true,
         ease: "power1.inOut"
-    });
+    })
+    // Gallery CTA fade in
+    .to(".gallery-cta-wrapper", {
+        opacity: 1,
+        y: -10,
+        duration: 1.5,
+        ease: "power3.out"
+    }, "-=1");
+    
+    // Magnetic hover effect for gallery button
+    const ctaButton = document.querySelector('.gallery-cta');
+    if (ctaButton) {
+        ctaButton.addEventListener('mousemove', (e) => {
+            const rect = ctaButton.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            
+            gsap.to(ctaButton, {
+                x: x * 0.3,
+                y: y * 0.3,
+                duration: 0.5,
+                ease: 'power2.out'
+            });
+        });
+        
+        ctaButton.addEventListener('mouseleave', () => {
+            gsap.to(ctaButton, {
+                x: 0,
+                y: 0,
+                duration: 0.8,
+                ease: 'elastic.out(1, 0.5)'
+            });
+        });
+        
+        // Glitch on click
+        ctaButton.addEventListener('click', (e) => {
+            const text = ctaButton.querySelector('.cta-text');
+            if (text) {
+                gsap.timeline()
+                    .to(text, {
+                        textShadow: '3px 0 0 #ff0000, -3px 0 0 #00ffff',
+                        duration: 0.05,
+                        repeat: 2,
+                        yoyo: true
+                    })
+                    .to(text, {
+                        textShadow: 'none',
+                        duration: 0.1
+                    });
+            }
+        });
+    }
     
     // Glitch effect function
     function glitchEffect(element: Element) {
@@ -289,5 +377,63 @@
     .manifesto-set-1.active,
     .manifesto-set-2.active {
         pointer-events: auto;
+    }
+    
+    /* Gallery CTA Button - Scroll-triggered Floating */
+    .gallery-cta-wrapper {
+        animation: float 3s ease-in-out infinite;
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .gallery-cta {
+        cursor: pointer;
+        position: relative;
+    }
+    
+    /* Floating particles */
+    .particle {
+        animation: particle-float 4s ease-in-out infinite;
+        opacity: 0;
+    }
+    
+    .particle-1 {
+        top: -15px;
+        right: -10px;
+        animation-delay: 0s;
+    }
+    
+    .particle-2 {
+        top: -20px;
+        right: 20px;
+        animation-delay: 1.5s;
+    }
+    
+    .particle-3 {
+        top: -10px;
+        right: 40px;
+        animation-delay: 3s;
+    }
+    
+    @keyframes particle-float {
+        0% {
+            opacity: 0;
+            transform: translateY(0) scale(1);
+        }
+        20% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+            transform: translateY(-30px) scale(0);
+        }
+    }
+    
+    .gallery-cta:hover .particle {
+        animation-duration: 2s;
     }
 </style>

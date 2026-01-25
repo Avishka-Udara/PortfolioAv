@@ -5,6 +5,7 @@ import ThreeBackground from '../components/ThreeBackground.astro';
 import Act from '../components/Act.astro';
 import Navigation from '../components/Navigation.astro';
 import Skills from '../components/Skills.astro';
+import Clients from '../components/Clients.astro';
 import Contact from '../components/Contact.astro';
 import VisualEffects from '../components/VisualEffects.astro';
 import VideoPlayer from '../components/VideoPlayer.astro';
@@ -65,12 +66,7 @@ const spatialAssets = [
             >
                  <div slot="visual" class="w-full h-full relative">
                     <!-- Carousel Background -->
-                    <VisualCarousel items={brandingAssets} interval={5000} /> <!-- 5s for images -->
-                    
-                    <!-- Clean Logo Strip at Bottom with better visibility -->
-                    <div class="absolute bottom-1/10 left-0 right-0 z-50">
-                        <Marquee items={logos} speed={40} />
-                    </div>
+                    <VisualCarousel items={brandingAssets} interval={5000} />
                 </div>
                 
                 <div class="mt-8">
@@ -80,11 +76,14 @@ const spatialAssets = [
                 </div>
             </Act>
 
+            <!-- Clients Showcase -->
+            <Clients logos={logos} />
+
             <!-- ACT II: 2D Animation -->
             <Act 
                 actNumber="ACT II"
                 title="MOTION NARRATIVE"
-                subtitle="Rates.lk & Explainer Promos"
+                subtitle="2D Motion Design & Explainer Promos"
                 description="Converting complex services into engaging visual stories. High-energy 2D motion graphics that drive conversion and understanding."
                 align="right"
                 bgColor="from-cyan-900/40 via-blue-900/30 to-black"
@@ -122,6 +121,41 @@ const spatialAssets = [
         </div>
 
         <Skills />
+    <!-- Gallery CTA Button - Scroll-triggered -->
+    <a href="/gallery" id="gallery-cta" class="fixed top-8 right-8 z-[100] opacity-0 pointer-events-none transition-all duration-500" style="transform: translateY(-100px)">
+        <div class="gallery-cta-btn group relative">
+            <!-- Particles -->
+            <div class="particle particle-1 absolute w-2 h-2 rounded-full bg-red-500/60"></div>
+            <div class="particle particle-2 absolute w-2 h-2 rounded-full bg-red-500/60"></div>
+            <div class="particle particle-3 absolute w-2 h-2 rounded-full bg-red-500/60"></div>
+            
+            <!-- Button -->
+            <div class="relative flex items-center gap-3 px-6 py-3 bg-black/80 backdrop-blur-xl rounded-full border border-white/20 group-hover:border-red-500 group-hover:bg-red-500/10 transition-all duration-500 hover-float">
+                <!-- Glow -->
+                <div class="absolute inset-0 rounded-full bg-red-500/30 scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 blur-md transition-all duration-700"></div>
+                
+                <div class="relative flex items-center gap-3">
+                    <!-- Live indicator -->
+                    <div class="w-6 h-6 relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-red-500 to-red-600 rounded-full animate-pulse"></div>
+                        <div class="absolute inset-0.5 bg-black rounded-full flex items-center justify-center">
+                            <div class="w-2 h-2 bg-red-500 rounded-full group-hover:animate-ping"></div>
+                        </div>
+                    </div>
+                    
+                    <span class="font-body text-xs uppercase tracking-[0.2em] text-white group-hover:text-red-400 transition-colors font-medium">
+                        View My Works
+                    </span>
+                    
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-white/60 group-hover:text-red-500 group-hover:translate-x-1 transition-all">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </a>
+
         <Contact />
 	</main>
     

@@ -31,7 +31,12 @@ const alignClass = align === "center" ? "items-center text-center" :
 
     <!-- Content (Top) -->
     <div class={`act-content relative z-10 flex flex-col max-w-6xl w-full mx-auto ${alignClass}`}>
-        <div class="act-number-wrapper mb-4 overflow-hidden">
+        <div class="act-number-wrapper mb-4 overflow-hidden relative inline-block">
+            <!-- Particles -->
+            <div class="particle particle-1 absolute w-1.5 h-1.5 rounded-full bg-red-500/60"></div>
+            <div class="particle particle-2 absolute w-1.5 h-1.5 rounded-full bg-red-500/60"></div>
+            <div class="particle particle-3 absolute w-1.5 h-1.5 rounded-full bg-red-500/60"></div>
+            
             <span class="act-number font-body text-sm md:text-base tracking-[0.4em] text-red-500 font-bold block">{actNumber}</span>
         </div>
         
@@ -142,5 +147,53 @@ const alignClass = align === "center" ? "items-center text-center" :
 <style>
     .act-button {
         will-change: transform;
+    }
+    .act-description {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    
+    /* Act number particles */
+    .act-number-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .particle {
+        animation: particle-float 4s ease-in-out infinite;
+        opacity: 0;
+        pointer-events: none;
+    }
+    
+    .particle-1 {
+        top: -10px;
+        left: 0;
+        animation-delay: 0s;
+    }
+    
+    .particle-2 {
+        top: -15px;
+        left: 30%;
+        animation-delay: 1.5s;
+    }
+    
+    .particle-3 {
+        top: -12px;
+        right: 10%;
+        animation-delay: 3s;
+    }
+    
+    @keyframes particle-float {
+        0% {
+            opacity: 0;
+            transform: translateY(0) scale(1);
+        }
+        20% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+            transform: translateY(-25px) scale(0);
+        }
     }
 </style>
