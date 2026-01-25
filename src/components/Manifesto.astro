@@ -220,6 +220,7 @@
     
     // Alternating text switcher
     let currentSet = 1;
+    let textSwitchInterval: number | null = null;
     
     function switchText() {
         const set1 = document.querySelector('.manifesto-set-1');
@@ -318,8 +319,53 @@
         }
     }
     
+    // Function to start the text switching interval
+    function startTextSwitcher() {
+        if (textSwitchInterval === null) {
+            textSwitchInterval = setInterval(switchText, 10000);
+        }
+    }
+    
+    // Function to stop the text switching interval
+    function stopTextSwitcher() {
+        if (textSwitchInterval !== null) {
+            clearInterval(textSwitchInterval);
+            textSwitchInterval = null;
+        }
+    }
+    
+    // Handle page visibility changes
+    function handleVisibilityChange() {
+        if (document.hidden) {
+            // Page is hidden - pause all animations
+            stopTextSwitcher();
+            gsap.globalTimeline.pause();
+        } else {
+            // Page is visible - resume animations and reset state
+            gsap.globalTimeline.resume();
+            
+            // Reset to a clean state to avoid glitches
+            const set1 = document.querySelector('.manifesto-set-1');
+            const set2 = document.querySelector('.manifesto-set-2');
+            
+            // Force back to set 1 with proper positioning
+            gsap.set(set1, { opacity: 1, scale: 1, filter: 'blur(0px)' });
+            gsap.set(set2, { opacity: 0, scale: 0.95, filter: 'blur(5px)' });
+            gsap.set(".manifesto-line", { opacity: 1, y: 0 });
+            gsap.set(".manifesto-sub .char", { opacity: 1, y: 0, rotation: 0 });
+            
+            currentSet = 1;
+            
+            // Restart the interval
+            startTextSwitcher();
+        }
+    }
+    
+    // Listen for visibility changes
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
     // Start alternating after initial animation (10 seconds interval)
-    setInterval(switchText, 10000);
+    startTextSwitcher();
     
     // Glitch effect on hover
     const glitchElements = document.querySelectorAll('.glitch-text');
