@@ -13,17 +13,31 @@
         </p>
     </div>
 
-    <!-- Content -->
-    <div class="manifesto-content relative z-10 text-center mix-blend-difference">
-        <h1 class="manifesto-line font-display text-[12vw] md:text-[10vw] font-black leading-[0.85] tracking-tighter uppercase text-white">
-            <span class="glitch-text" data-text="I Don't">I Don't</span>
+    <!-- Content - Set 1 (Default) -->
+    <div class="manifesto-content manifesto-set-1 relative z-10 text-center mix-blend-difference">
+        <h1 class="manifesto-line font-display text-[10vw] md:text-[9vw] font-black leading-[0.85] tracking-tighter uppercase text-white">
+            <span class="glitch-text" data-text="I Don't Design">I Don't Design</span>
         </h1>
-        <h1 class="manifesto-line font-display text-[12vw] md:text-[10vw] font-black leading-[0.85] tracking-tighter uppercase text-white">
-            <span class="glitch-text" data-text="Design Pages">Design Pages</span>
+        <h1 class="manifesto-line font-display text-[10vw] md:text-[9vw] font-black leading-[0.85] tracking-tighter uppercase text-white">
+            <span class="glitch-text" data-text="Frames">Frames</span>
         </h1>
-        <div class="h-12 md:h-24"></div> <!-- Spacer -->
+        <div class="h-9 md:h-24"></div> <!-- Spacer -->
         <h2 class="manifesto-sub font-display text-[6vw] md:text-[5vw] font-bold leading-[0.9] tracking-tight uppercase text-neutral-400">
-            <span class="word">I</span> <span class="word">Design</span> <span class="word">Moments</span>
+            <span class="word">I</span> <span class="word">Design</span> <span class="word">Moments</span> <span class="word">That</span> <span class="word">Move</span>
+        </h2>
+    </div>
+    
+    <!-- Content - Set 2 (Alternate) -->
+    <div class="manifesto-content manifesto-set-2 absolute inset-0 flex flex-col justify-center items-center z-10 text-center mix-blend-difference opacity-0">
+        <h1 class="manifesto-line-alt font-display text-[10vw] md:text-[9vw] font-black leading-[0.85] tracking-tighter uppercase text-white">
+            <span class="glitch-text" data-text="I Don't Create">I Don't Create</span>
+        </h1>
+        <h1 class="manifesto-line-alt font-display text-[10vw] md:text-[9vw] font-black leading-[0.85] tracking-tighter uppercase text-white">
+            <span class="glitch-text" data-text="Visuals">Visuals</span>
+        </h1>
+        <div class="h-9 md:h-24"></div> <!-- Spacer -->
+        <h2 class="manifesto-sub-alt font-display text-[6vw] md:text-[5vw] font-bold leading-[0.9] tracking-tight uppercase text-neutral-400">
+            <span class="word-alt">I</span> <span class="word-alt">Shape</span> <span class="word-alt">Perception</span>
         </h2>
     </div>
     
@@ -44,8 +58,8 @@
         ).join('');
     }
 
-    // Split all words in subtitle
-    document.querySelectorAll('.manifesto-sub .word').forEach(word => {
+    // Split all words in subtitle (both sets)
+    document.querySelectorAll('.manifesto-sub .word, .manifesto-sub-alt .word-alt').forEach(word => {
         splitText(word);
     });
 
@@ -58,8 +72,8 @@
         duration: 1.2,
         delay: 0.2
     })
-    // Main lines with stagger
-    tl.to(".manifesto-line", {
+    // Main lines with stagger (Set 1)
+    .to(".manifesto-line", {
         opacity: 1,
         duration: 0.01,
         stagger: 0
@@ -71,7 +85,7 @@
         delay: 0.3
     })
     // Character animation for subtitle
-    .to(".char", {
+    .to(".manifesto-sub .char", {
         opacity: 1,
         y: 0,
         rotation: 0,
@@ -88,16 +102,142 @@
         ease: "power1.inOut"
     });
     
+    // Glitch effect function
+    function glitchEffect(element: Element) {
+        const glitchTl = gsap.timeline();
+        
+        glitchTl.to(element, {
+            textShadow: '5px 0 0 #ff0000, -5px 0 0 #00ffff',
+            skewX: 10,
+            duration: 0.05,
+        })
+        .to(element, {
+            textShadow: '-5px 0 0 #ff0000, 5px 0 0 #00ffff',
+            skewX: -10,
+            duration: 0.05,
+        })
+        .to(element, {
+            textShadow: '3px 3px 0 #ff0000, -3px -3px 0 #00ffff',
+            skewX: 5,
+            duration: 0.05,
+        })
+        .to(element, {
+            textShadow: 'none',
+            skewX: 0,
+            duration: 0.1,
+        });
+        
+        return glitchTl;
+    }
+    
+    // Alternating text switcher
+    let currentSet = 1;
+    
+    function switchText() {
+        const set1 = document.querySelector('.manifesto-set-1');
+        const set2 = document.querySelector('.manifesto-set-2');
+        
+        if (currentSet === 1) {
+            // Glitch out Set 1
+            const glitchElements1 = set1?.querySelectorAll('.glitch-text');
+            glitchElements1?.forEach(el => glitchEffect(el));
+            
+            // Fade out Set 1, Fade in Set 2
+            gsap.to(set1, {
+                opacity: 0,
+                scale: 0.95,
+                filter: 'blur(5px)',
+                duration: 0.5,
+                ease: "power2.in"
+            });
+            
+            // Show Set 2 main lines first
+            gsap.set(".manifesto-line-alt", { opacity: 1, y: 0 });
+            
+            gsap.to(set2, {
+                opacity: 1,
+                scale: 1,
+                filter: 'blur(0px)',
+                duration: 0.5,
+                delay: 0.3,
+                ease: "power2.out",
+                onStart: () => {
+                    // Glitch in Set 2
+                    const glitchElements2 = set2?.querySelectorAll('.glitch-text');
+                    glitchElements2?.forEach(el => glitchEffect(el));
+                }
+            });
+            
+            // Animate characters in Set 2 subtitle
+            gsap.fromTo(".manifesto-sub-alt .char", 
+                { opacity: 0, y: 20 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.6,
+                    stagger: 0.02,
+                    delay: 0.5,
+                    ease: "back.out(1.7)"
+                }
+            );
+            
+            currentSet = 2;
+        } else {
+            // Glitch out Set 2
+            const glitchElements2 = set2?.querySelectorAll('.glitch-text');
+            glitchElements2?.forEach(el => glitchEffect(el));
+            
+            // Fade out Set 2, Fade in Set 1
+            gsap.to(set2, {
+                opacity: 0,
+                scale: 0.95,
+                filter: 'blur(5px)',
+                duration: 0.5,
+                ease: "power2.in"
+            });
+            
+            // Show Set 1 main lines
+            gsap.set(".manifesto-line", { opacity: 1, y: 0 });
+            
+            gsap.to(set1, {
+                opacity: 1,
+                scale: 1,
+                filter: 'blur(0px)',
+                duration: 0.5,
+                delay: 0.3,
+                ease: "power2.out",
+                onStart: () => {
+                    // Glitch in Set 1
+                    const glitchElements1 = set1?.querySelectorAll('.glitch-text');
+                    glitchElements1?.forEach(el => glitchEffect(el));
+                }
+            });
+            
+            // Animate characters in Set 1 subtitle
+            gsap.fromTo(".manifesto-sub .char", 
+                { opacity: 0, y: 20 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.6,
+                    stagger: 0.02,
+                    delay: 0.5,
+                    ease: "back.out(1.7)"
+                }
+            );
+            
+            currentSet = 1;
+        }
+    }
+    
+    // Start alternating after initial animation (10 seconds interval)
+    setInterval(switchText, 10000);
+    
     // Glitch effect on hover
     const glitchElements = document.querySelectorAll('.glitch-text');
     glitchElements.forEach(el => {
         el.addEventListener('mouseenter', () => {
-            gsap.to(el, {
-                textShadow: '3px 3px 0 #ff0000, -3px -3px 0 #00ffff',
-                duration: 0.1,
-                yoyo: true,
-                repeat: 3
-            });
+            glitchEffect(el);
         });
     });
     
@@ -120,7 +260,8 @@
 </script>
 
 <style>
-    .manifesto-line {
+    .manifesto-line,
+    .manifesto-line-alt {
         opacity: 0;
         transform: translateY(50px);
         will-change: transform, opacity;
@@ -139,5 +280,14 @@
     
     .manifesto-bg {
         background: radial-gradient(circle at 50% 50%, rgba(255, 51, 51, 0.05) 0%, transparent 70%);
+    }
+    
+    .manifesto-set-2 {
+        pointer-events: none;
+    }
+    
+    .manifesto-set-1.active,
+    .manifesto-set-2.active {
+        pointer-events: auto;
     }
 </style>
