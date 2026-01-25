@@ -16,22 +16,41 @@ const { items, interval = 10000, class: className } = Astro.props;
 
 <div class={`visual-carousel relative w-full h-full overflow-hidden ${className}`}>
     {items.map((item, index) => (
-        <div class={`carousel-item absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} data-index={index}>
+        <div class={`carousel-item absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} data-index={index} data-src={item.src}>
             {item.type === 'video' ? (
-                <video 
-                    src={item.src} 
-                    autoplay 
-                    loop 
-                    muted 
-                    playsinline 
-                    class="w-full h-full object-cover"
-                ></video>
+                <div class="w-full h-full relative">
+                    <video 
+                        src={item.src} 
+                        autoplay 
+                        loop 
+                        muted 
+                        playsinline 
+                        preload="metadata"
+                        class="video-element w-full h-full object-cover"
+                    ></video>
+                    <!-- Fallback UI for video errors -->
+                    <div class="video-error hidden absolute inset-0 bg-gradient-to-br from-gray-900 to-black flex flex-col items-center justify-center text-white/60">
+                        <svg class="w-16 h-16 mb-4 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        <p class="font-body text-sm uppercase tracking-wider">Media Unavailable</p>
+                    </div>
+                </div>
             ) : (
-                <img 
-                    src={item.src} 
-                    alt={item.alt || ""} 
-                    class="w-full h-full object-cover"
-                />
+                <div class="w-full h-full relative">
+                    <img 
+                        src={item.src} 
+                        alt={item.alt || ""} 
+                        class="image-element w-full h-full object-cover"
+                    />
+                    <!-- Fallback UI for image errors -->
+                    <div class="image-error hidden absolute inset-0 bg-gradient-to-br from-gray-900 to-black flex flex-col items-center justify-center text-white/60">
+                        <svg class="w-16 h-16 mb-4 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <p class="font-body text-sm uppercase tracking-wider">Image Unavailable</p>
+                    </div>
+                </div>
             )}
             <div class="absolute inset-0 bg-black/80"></div>
         </div>
@@ -48,30 +67,115 @@ const { items, interval = 10000, class: className } = Astro.props;
 </div>
 
 <script define:vars={{ interval, count: items.length }}>
-    const items = document.querySelectorAll('.carousel-item');
+    const carouselItems = document.querySelectorAll('.carousel-item');
     const indicators = document.querySelectorAll('.indicator .progress');
     let currentIndex = 0;
     let timer;
     let startTime;
-    let paused = false; // Could add pause on hover logic later
+    let paused = false;
+    let brokenItems = new Set(); // Track which items have errors
+    
+    // Setup error handlers for all videos and images
+    function setupErrorHandlers() {
+        carouselItems.forEach((item, index) => {
+            const video = item.querySelector('.video-element');
+            const image = item.querySelector('.image-element');
+            const videoError = item.querySelector('.video-error');
+            const imageError = item.querySelector('.image-error');
+            
+            if (video) {
+                // Video error handler
+                video.addEventListener('error', (e) => {
+                    console.warn(`Video failed to load: ${item.dataset.src}`, e);
+                    brokenItems.add(index);
+                    video.classList.add('hidden');
+                    if (videoError) {
+                        videoError.classList.remove('hidden');
+                    }
+                    // If current item is broken, skip to next
+                    if (index === currentIndex) {
+                        setTimeout(() => nextSlide(), 1000);
+                    }
+                });
+                
+                // Video loaded successfully
+                video.addEventListener('loadeddata', () => {
+                    brokenItems.delete(index);
+                });
+                
+                // Video stalled handler
+                video.addEventListener('stalled', (e) => {
+                    console.warn(`Video stalled: ${item.dataset.src}`);
+                });
+            }
+            
+            if (image) {
+                // Image error handler
+                image.addEventListener('error', (e) => {
+                    console.warn(`Image failed to load: ${item.dataset.src}`, e);
+                    brokenItems.add(index);
+                    image.classList.add('hidden');
+                    if (imageError) {
+                        imageError.classList.remove('hidden');
+                    }
+                    // If current item is broken, skip to next
+                    if (index === currentIndex) {
+                        setTimeout(() => nextSlide(), 1000);
+                    }
+                });
+                
+                // Image loaded successfully
+                image.addEventListener('load', () => {
+                    brokenItems.delete(index);
+                });
+            }
+        });
+    }
 
     function nextSlide() {
         const prevIndex = currentIndex;
-        currentIndex = (currentIndex + 1) % count;
+        let attempts = 0;
+        const maxAttempts = count;
+        
+        // Find next non-broken item
+        do {
+            currentIndex = (currentIndex + 1) % count;
+            attempts++;
+            
+            // If all items are broken, stop
+            if (attempts >= maxAttempts) {
+                console.error('All carousel items have errors');
+                return;
+            }
+        } while (brokenItems.has(currentIndex));
         
         // Items transition
-        items[prevIndex].classList.remove('opacity-100', 'z-10');
-        items[prevIndex].classList.add('opacity-0', 'z-0');
+        carouselItems[prevIndex].classList.remove('opacity-100', 'z-10');
+        carouselItems[prevIndex].classList.add('opacity-0', 'z-0');
         
-        items[currentIndex].classList.remove('opacity-0', 'z-0');
-        items[currentIndex].classList.add('opacity-100', 'z-10');
+        carouselItems[currentIndex].classList.remove('opacity-0', 'z-0');
+        carouselItems[currentIndex].classList.add('opacity-100', 'z-10');
         
         // Video handling
-        const prevVideo = items[prevIndex].querySelector('video');
-        const currentVideo = items[currentIndex].querySelector('video');
+        const prevVideo = carouselItems[prevIndex].querySelector('.video-element');
+        const currentVideo = carouselItems[currentIndex].querySelector('.video-element');
         
-        if (prevVideo) prevVideo.pause();
-        if (currentVideo) currentVideo.play().catch(e => console.log(e));
+        if (prevVideo) {
+            prevVideo.pause();
+        }
+        
+        if (currentVideo && !brokenItems.has(currentIndex)) {
+            currentVideo.play().catch(e => {
+                console.warn('Video play failed:', e);
+                // Mark as broken and try next slide
+                brokenItems.add(currentIndex);
+                const videoError = carouselItems[currentIndex].querySelector('.video-error');
+                const videoElement = carouselItems[currentIndex].querySelector('.video-element');
+                if (videoElement) videoElement.classList.add('hidden');
+                if (videoError) videoError.classList.remove('hidden');
+                setTimeout(() => nextSlide(), 1000);
+            });
+        }
 
         // Reset progress bars
         indicators.forEach(ind => {
@@ -94,9 +198,31 @@ const { items, interval = 10000, class: className } = Astro.props;
         
         startTime = Date.now();
     }
+    
+    // Handle visibility changes to pause/resume videos
+    function handleVisibilityChange() {
+        if (document.hidden) {
+            paused = true;
+            const currentVideo = carouselItems[currentIndex]?.querySelector('.video-element');
+            if (currentVideo) {
+                currentVideo.pause();
+            }
+        } else {
+            paused = false;
+            const currentVideo = carouselItems[currentIndex]?.querySelector('.video-element');
+            if (currentVideo && !brokenItems.has(currentIndex)) {
+                currentVideo.play().catch(e => console.warn('Resume play failed:', e));
+            }
+        }
+    }
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     // Init
+    setupErrorHandlers();
     startProgress(0);
+    
+    // Start carousel rotation
     setInterval(nextSlide, interval);
 
 </script>

@@ -130,15 +130,46 @@ const galleryItems = [
                 <div class={`gallery-item break-inside-avoid mb-8 group relative rounded-xl overflow-hidden bg-neutral-900 border border-white/5 cursor-pointer`} data-category={item.category} data-src={item.src} data-type={item.type}>
                     {item.type === 'video' ? (
                         <div class="relative w-full aspect-video">
-                            <video src={item.src.split('/').map(p => encodeURIComponent(p)).join('/')} class="w-full h-full object-cover" muted playsinline loop onmouseover="this.play()" onmouseout="this.pause()"></video>
-                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <video 
+                                src={item.src.split('/').map(p => encodeURIComponent(p)).join('/')} 
+                                class="gallery-video w-full h-full object-cover" 
+                                muted 
+                                playsinline 
+                                loop 
+                                preload="none"
+                                poster=""
+                                onmouseover="this.play()" 
+                                onmouseout="this.pause(); this.currentTime = 0;"
+                            ></video>
+                            <!-- Video Error Fallback -->
+                            <div class="gallery-video-error hidden absolute inset-0 bg-gradient-to-br from-gray-900 to-black flex flex-col items-center justify-center text-white/40">
+                                <svg class="w-12 h-12 mb-2 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                <p class="font-body text-xs uppercase tracking-wider">Media Error</p>
+                            </div>
+                            <div class="video-play-overlay absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-300 group-hover:opacity-70">
                                 <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center">
                                     <div class="w-0 h-0 border-t-[8px] border-t-transparent border-l-[12px] border-l-white border-b-[8px] border-b-transparent ml-1"></div>
                                 </div>
                             </div>
                         </div>
                     ) : (
-                        <img src={item.src} alt={item.alt} loading="lazy" class="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105" />
+                        <div class="relative w-full">
+                            <img 
+                                src={item.src} 
+                                alt={item.alt} 
+                                loading="lazy" 
+                                class="gallery-image w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105" 
+                            />
+                            <!-- Image Error Fallback -->
+                            <div class="gallery-image-error hidden absolute inset-0 bg-gradient-to-br from-gray-900 to-black flex flex-col items-center justify-center text-white/40">
+                                <svg class="w-12 h-12 mb-2 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <p class="font-body text-xs uppercase tracking-wider">Image Error</p>
+                            </div>
+                        </div>
                     )}
                     
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
@@ -196,6 +227,51 @@ const galleryItems = [
     // Get query param
     const params = new URLSearchParams(window.location.search);
     const initialCategory = params.get('category') || 'all';
+    
+    // Setup error handlers for all gallery media
+    function setupMediaErrorHandlers() {
+        // Handle video errors
+        document.querySelectorAll('.gallery-video').forEach((video) => {
+            const container = video.closest('.gallery-item');
+            const errorUI = container?.querySelector('.gallery-video-error');
+            
+            video.addEventListener('error', (e) => {
+                console.warn('Gallery video failed to load:', video.src, e);
+                video.classList.add('hidden');
+                if (errorUI) {
+                    errorUI.classList.remove('hidden');
+                }
+            });
+            
+            video.addEventListener('loadeddata', () => {
+                video.classList.remove('hidden');
+                if (errorUI) {
+                    errorUI.classList.add('hidden');
+                }
+            });
+        });
+        
+        // Handle image errors
+        document.querySelectorAll('.gallery-image').forEach((img) => {
+            const container = img.closest('.gallery-item');
+            const errorUI = container?.querySelector('.gallery-image-error');
+            
+            img.addEventListener('error', (e) => {
+                console.warn('Gallery image failed to load:', img.src, e);
+                img.classList.add('hidden');
+                if (errorUI) {
+                    errorUI.classList.remove('hidden');
+                }
+            });
+            
+            img.addEventListener('load', () => {
+                img.classList.remove('hidden');
+                if (errorUI) {
+                    errorUI.classList.add('hidden');
+                }
+            });
+        });
+    }
 
     function filterGallery(category) {
         // Update buttons
@@ -227,6 +303,8 @@ const galleryItems = [
     });
 
     filterGallery(initialCategory);
+    // Setup error handlers after initial filter
+    setupMediaErrorHandlers();
 
     // Enhanced Lightbox with Navigation
     const lightbox = document.getElementById('lightbox');
@@ -253,22 +331,85 @@ const galleryItems = [
         const src = item.dataset.src;
         const type = item.dataset.type;
         
+        // Clear previous content and pause any videos
+        const oldVideo = lightboxContent.querySelector('video');
+        if (oldVideo) {
+            oldVideo.pause();
+            oldVideo.src = '';
+            oldVideo.load();
+        }
         lightboxContent.innerHTML = '';
         
         // URL encode the path to handle spaces
         const encodedSrc = src.split('/').map(part => encodeURIComponent(part)).join('/');
         
         if (type === 'video') {
+            // Create loading indicator
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'absolute inset-0 flex items-center justify-center bg-black/80 z-10';
+            loadingDiv.innerHTML = `
+                <div class="flex flex-col items-center gap-4">
+                    <div class="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
+                    <p class="text-white/60 font-body text-sm uppercase tracking-wider">Loading Video...</p>
+                </div>
+            `;
+            lightboxContent.appendChild(loadingDiv);
+            
             const video = document.createElement('video');
             video.src = encodedSrc;
             video.controls = true;
-            video.autoplay = true;
             video.className = "max-w-full max-h-full object-contain rounded-xl shadow-2xl";
+            
+            // Optimize video attributes for better performance
+            video.preload = 'auto';
+            video.playsInline = true;
+            
+            // Remove loading indicator once video can play
+            video.addEventListener('canplay', () => {
+                loadingDiv.remove();
+                video.play().catch(e => console.warn('Autoplay prevented:', e));
+            }, { once: true });
+            
+            // Handle video errors
+            video.addEventListener('error', (e) => {
+                console.error('Video loading error:', e);
+                loadingDiv.innerHTML = `
+                    <div class="flex flex-col items-center gap-4">
+                        <svg class="w-16 h-16 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="text-white/60 font-body text-sm uppercase tracking-wider">Failed to Load Video</p>
+                    </div>
+                `;
+            });
+            
+            // Show buffering indicator
+            video.addEventListener('waiting', () => {
+                if (!loadingDiv.parentElement) {
+                    loadingDiv.querySelector('p').textContent = 'Buffering...';
+                    lightboxContent.appendChild(loadingDiv);
+                }
+            });
+            
+            video.addEventListener('playing', () => {
+                if (loadingDiv.parentElement) {
+                    loadingDiv.remove();
+                }
+            });
+            
             lightboxContent.appendChild(video);
         } else {
             const img = document.createElement('img');
             img.src = encodedSrc;
             img.className = "max-w-full max-h-full object-contain rounded-xl shadow-2xl";
+            
+            // Add loading state for images too
+            img.style.opacity = '0';
+            img.addEventListener('load', () => {
+                img.style.transition = 'opacity 0.3s';
+                img.style.opacity = '1';
+            });
+            
             lightboxContent.appendChild(img);
         }
         
