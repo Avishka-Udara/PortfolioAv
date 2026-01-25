@@ -1,0 +1,135 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Manifesto from '../components/Manifesto.astro';
+import ThreeBackground from '../components/ThreeBackground.astro';
+import Act from '../components/Act.astro';
+import Navigation from '../components/Navigation.astro';
+import Skills from '../components/Skills.astro';
+import Contact from '../components/Contact.astro';
+import VisualEffects from '../components/VisualEffects.astro';
+import VideoPlayer from '../components/VideoPlayer.astro';
+import Marquee from '../components/Marquee.astro';
+import VisualCarousel from '../components/VisualCarousel.astro';
+// Asset imports logic or hardcoded paths
+const logos = [
+    { src: '/Logos_png/rates.lk_logo.png', alt: 'rates.lk' },
+    { src: '/Logos_png/HSI_logo.png', alt: 'HSI' },
+    { src: '/Logos_png/Nex_Pay_logo.png', alt: 'NexPay' },
+    { src: '/Logos_png/Bloom_logo.png', alt: 'Bloom' },
+    { src: '/Logos_png/Shishu_boutique_logo.png', alt: 'Shishu Boutique' },
+    { src: '/Logos_png/GlobalShouth_logo.png', alt: 'GlobalSouth' },
+    { src: '/Logos_png/Maatha_logo.png', alt: 'Maatha' },
+    { src: '/Logos_png/bitzIT_logo.png', alt: 'bitzIT' },
+    { src: '/Logos_png/BTI_GROUP_logo.png', alt: 'BTI Group' },
+    { src: '/Logos_png/BTI_EXCHANGE_logo.png', alt: 'BTI Exchange' },
+    { src: '/Logos_png/BTI NFT MARKETPLACE_logo.png', alt: 'BTI NFT' },
+    { src: '/Logos_png/BTI INVESTMENT FUNDS_logo.png', alt: 'BTI Funds' },
+    { src: '/Logos_png/Ceylon Releaf-01.png', alt: 'Ceylon Releaf' },
+];
+
+// Assets for Carousels
+const brandingAssets = [
+    { type: 'image', src: '/Graphics/JLAN_Social_Media_Cover_image.jpg', alt: 'JLAN Cover' },
+    { type: 'image', src: '/Graphics/Speraaa_Hospitaals_Business_card.jpg', alt: 'Spera Card' },
+    { type: 'image', src: '/Graphics/VitaminD3_bottle_design_and_mockup.jpg', alt: 'Vitamin D3' },
+    { type: 'image', src: '/Graphics/cute_Bunny_Package_Mockup.png', alt: 'Package Mockup' }
+];
+
+const motionAssets = [
+    { type: 'video', src: '/2D/rates.lk_website_promo.mp4' },
+    { type: 'video', src: '/2D/girl_2d_animation_song.mp4' }
+];
+
+const spatialAssets = [
+    { type: 'video', src: '/3D/animation1.mp4' },
+    // Placeholder for other 3D content if available, e.g. re-using animation1 or static renders
+];
+
+---
+
+<Layout title="Avishka Udara | Visual Experience">
+	<main class="relative z-10">
+        <!-- Manifesto Section -->
+        <Manifesto />
+
+        <!-- Placeholder for Acts -->
+        <div id="projects" class="relative z-20">
+            <!-- ACT I: Branding & Graphics -->
+            <Act 
+                actNumber="ACT I"
+                title="BRAND IDENTITY"
+                subtitle="Visual Systems & Logistics"
+                description="Creating distinct visual languages for brands across diverse sectors, from healthcare to fintech. Focused on scalable, memorable identity systems."
+                align="left"
+                bgColor="from-purple-900/40 via-violet-900/30 to-black"
+            >
+                 <div slot="visual" class="w-full h-full relative">
+                    <!-- Carousel Background -->
+                    <VisualCarousel items={brandingAssets} interval={5000} /> <!-- 5s for images -->
+                    
+                    <!-- Clean Logo Strip at Bottom with better visibility -->
+                    <div class="absolute bottom-1/10 left-0 right-0 z-50">
+                        <Marquee items={logos} speed={40} />
+                    </div>
+                </div>
+                
+                <div class="mt-8">
+                    <a href="/gallery?category=branding" class="inline-block px-8 py-4 border border-white/30 rounded-full text-white font-body text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors duration-300">
+                        View Branding Gallery
+                    </a>
+                </div>
+            </Act>
+
+            <!-- ACT II: 2D Animation -->
+            <Act 
+                actNumber="ACT II"
+                title="MOTION NARRATIVE"
+                subtitle="Rates.lk & Explainer Promos"
+                description="Converting complex services into engaging visual stories. High-energy 2D motion graphics that drive conversion and understanding."
+                align="right"
+                bgColor="from-cyan-900/40 via-blue-900/30 to-black"
+            >
+                <div slot="visual" class="w-full h-full">
+                     <VisualCarousel items={motionAssets} interval={10000} />
+                </div>
+                
+                <div class="mt-8">
+                    <a href="/gallery?category=2d" class="inline-block px-8 py-4 border border-white/30 rounded-full text-white font-body text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors duration-300">
+                        View Motion Gallery
+                    </a>
+                </div>
+            </Act>
+
+            <!-- ACT III: 3D Animation -->
+            <Act 
+                actNumber="ACT III"
+                title="SPATIAL DEPTH"
+                subtitle="Product & Environment Design"
+                description="Pushing boundaries with 3D renderings and spatial design. Creating photorealistic environments and stylized assets for immersive experiences."
+                align="center"
+                bgColor="from-emerald-900/40 via-teal-900/30 to-black"
+            >
+                <div slot="visual" class="w-full h-full">
+                     <VisualCarousel items={spatialAssets} interval={10000} />
+                </div>
+                
+                 <div class="mt-8">
+                    <a href="/gallery?category=3d" class="inline-block px-8 py-4 border border-white/30 rounded-full text-white font-body text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors duration-300">
+                        View 3D Gallery
+                    </a>
+                </div>
+            </Act>
+        </div>
+
+        <Skills />
+        <Contact />
+	</main>
+    
+    <Navigation />
+    <VisualEffects />
+    
+    <!-- Background Canvas -->
+    <div class="fixed inset-0 -z-10 bg-[#050505]">
+        <ThreeBackground />
+    </div>
+</Layout>

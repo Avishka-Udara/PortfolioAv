@@ -1,0 +1,52 @@
+---
+interface Props {
+  src: string;
+  poster?: string;
+  autoplay?: boolean;
+  loop?: boolean;
+  muted?: boolean;
+  controls?: boolean;
+  class?: string;
+}
+
+const { src, poster, autoplay = true, loop = true, muted = true, controls = false, class: className } = Astro.props;
+---
+
+<div class={`video-container relative overflow-hidden rounded-lg bg-neutral-900 ${className}`}>
+  <video
+    src={src}
+    poster={poster}
+    autoplay={autoplay}
+    loop={loop}
+    muted={muted}
+    playsinline
+    controls={controls}
+    class="w-full h-full object-cover"
+    loading="lazy"
+  ></video>
+  
+  {!controls && (
+    <div class="absolute inset-0 bg-black/10 pointer-events-none"></div>
+  )}
+</div>
+
+<script>
+  // Lazy play videos only when they are in viewport
+  const videos = document.querySelectorAll('video[autoplay]');
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const video = entry.target as HTMLVideoElement;
+      if (entry.isIntersecting) {
+        video.play().catch(() => {
+          // Auto-play might be blocked by browser policy
+          console.log('Autoplay blocked');
+        });
+      } else {
+        video.pause();
+      }
+    });
+  }, { threshold: 0.2 });
+
+  videos.forEach(video => observer.observe(video));
+</script>

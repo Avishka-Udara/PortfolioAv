@@ -1,0 +1,143 @@
+---
+---
+
+<section id="manifesto" class="relative min-h-screen flex flex-col justify-center items-center px-4 overflow-hidden">
+    
+    <!-- Background Content (Video/Image Placeholder) -->
+    <div class="manifesto-bg absolute inset-0 -z-10"></div>
+
+    <!-- Personal Branding -->
+    <div class="absolute top-12 left-0 right-0 text-center z-20 opacity-0 personal-brand">
+        <p class="font-body text-xs md:text-sm uppercase tracking-[0.3em] text-neutral-400 font-light">
+            Avishka Udara — Motion Designer & Visual Storyteller
+        </p>
+    </div>
+
+    <!-- Content -->
+    <div class="manifesto-content relative z-10 text-center mix-blend-difference">
+        <h1 class="manifesto-line font-display text-[12vw] md:text-[10vw] font-black leading-[0.85] tracking-tighter uppercase text-white">
+            <span class="glitch-text" data-text="I Don't">I Don't</span>
+        </h1>
+        <h1 class="manifesto-line font-display text-[12vw] md:text-[10vw] font-black leading-[0.85] tracking-tighter uppercase text-white">
+            <span class="glitch-text" data-text="Design Pages">Design Pages</span>
+        </h1>
+        <div class="h-12 md:h-24"></div> <!-- Spacer -->
+        <h2 class="manifesto-sub font-display text-[6vw] md:text-[5vw] font-bold leading-[0.9] tracking-tight uppercase text-neutral-400">
+            <span class="word">I</span> <span class="word">Design</span> <span class="word">Moments</span>
+        </h2>
+    </div>
+    
+    <div class="absolute bottom-12 left-0 right-0 text-center opacity-0 scroll-hint">
+        <p class="font-body text-sm uppercase tracking-widest text-neutral-500">↓ Scroll to Begin</p>
+    </div>
+</section>
+
+<script>
+    import { gsap } from "gsap";
+    
+    // Split text into characters
+    function splitText(element: Element) {
+        const text = element.textContent || '';
+        const chars = text.split('');
+        element.innerHTML = chars.map((char, i) => 
+            `<span class="char" style="display:inline-block; opacity:0;">${char === ' ' ? '&nbsp;' : char}</span>`
+        ).join('');
+    }
+
+    // Split all words in subtitle
+    document.querySelectorAll('.manifesto-sub .word').forEach(word => {
+        splitText(word);
+    });
+
+    const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+
+    // Personal brand fade in first
+    tl.to(".personal-brand", {
+        opacity: 1,
+        y: 0,
+        duration: 1.2,
+        delay: 0.2
+    })
+    // Main lines with stagger
+    tl.to(".manifesto-line", {
+        opacity: 1,
+        duration: 0.01,
+        stagger: 0
+    })
+    .to(".manifesto-line", {
+        y: 0,
+        duration: 1.5,
+        stagger: 0.3,
+        delay: 0.3
+    })
+    // Character animation for subtitle
+    .to(".char", {
+        opacity: 1,
+        y: 0,
+        rotation: 0,
+        duration: 0.6,
+        stagger: 0.02,
+        ease: "back.out(1.7)"
+    }, "-=0.8")
+    .to(".scroll-hint", {
+        opacity: 1,
+        duration: 1,
+        y: 10,
+        repeat: -1,
+        yoyo: true,
+        ease: "power1.inOut"
+    });
+    
+    // Glitch effect on hover
+    const glitchElements = document.querySelectorAll('.glitch-text');
+    glitchElements.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            gsap.to(el, {
+                textShadow: '3px 3px 0 #ff0000, -3px -3px 0 #00ffff',
+                duration: 0.1,
+                yoyo: true,
+                repeat: 3
+            });
+        });
+    });
+    
+    // Mouse movement parallax effect
+    const container = document.getElementById('manifesto');
+    if (container) {
+        container.addEventListener('mousemove', (e) => {
+            const { clientX, clientY } = e;
+            const xPos = (clientX / window.innerWidth - 0.5) * 30;
+            const yPos = (clientY / window.innerHeight - 0.5) * 30;
+            
+            gsap.to('.manifesto-content', {
+                x: xPos,
+                y: yPos,
+                duration: 1,
+                ease: 'power2.out'
+            });
+        });
+    }
+</script>
+
+<style>
+    .manifesto-line {
+        opacity: 0;
+        transform: translateY(50px);
+        will-change: transform, opacity;
+    }
+    
+    .char {
+        transform: translateY(20px) rotate(-5deg);
+        will-change: transform, opacity;
+    }
+    
+    .glitch-text {
+        position: relative;
+        display: inline-block;
+        transition: all 0.1s;
+    }
+    
+    .manifesto-bg {
+        background: radial-gradient(circle at 50% 50%, rgba(255, 51, 51, 0.05) 0%, transparent 70%);
+    }
+</style>

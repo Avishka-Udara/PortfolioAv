@@ -1,0 +1,102 @@
+---
+interface MediaItem {
+    type: 'image' | 'video';
+    src: string;
+    alt?: string;
+}
+
+interface Props {
+    items: MediaItem[];
+    interval?: number; // millseconds
+    class?: string;
+}
+
+const { items, interval = 10000, class: className } = Astro.props;
+---
+
+<div class={`visual-carousel relative w-full h-full overflow-hidden ${className}`}>
+    {items.map((item, index) => (
+        <div class={`carousel-item absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} data-index={index}>
+            {item.type === 'video' ? (
+                <video 
+                    src={item.src} 
+                    autoplay 
+                    loop 
+                    muted 
+                    playsinline 
+                    class="w-full h-full object-cover"
+                ></video>
+            ) : (
+                <img 
+                    src={item.src} 
+                    alt={item.alt || ""} 
+                    class="w-full h-full object-cover"
+                />
+            )}
+            <div class="absolute inset-0 bg-black/80"></div>
+        </div>
+    ))}
+    
+    <!-- Progress Indicator (Optional) -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+        {items.map((_, index) => (
+            <div class={`indicator w-12 h-1 bg-white/30 rounded-full overflow-hidden`}>
+                <div class={`progress w-full h-full bg-white transform -translate-x-full transition-transform duration-[100ms] ${index === 0 ? 'active' : ''}`}></div>
+            </div>
+        ))}
+    </div>
+</div>
+
+<script define:vars={{ interval, count: items.length }}>
+    const items = document.querySelectorAll('.carousel-item');
+    const indicators = document.querySelectorAll('.indicator .progress');
+    let currentIndex = 0;
+    let timer;
+    let startTime;
+    let paused = false; // Could add pause on hover logic later
+
+    function nextSlide() {
+        const prevIndex = currentIndex;
+        currentIndex = (currentIndex + 1) % count;
+        
+        // Items transition
+        items[prevIndex].classList.remove('opacity-100', 'z-10');
+        items[prevIndex].classList.add('opacity-0', 'z-0');
+        
+        items[currentIndex].classList.remove('opacity-0', 'z-0');
+        items[currentIndex].classList.add('opacity-100', 'z-10');
+        
+        // Video handling
+        const prevVideo = items[prevIndex].querySelector('video');
+        const currentVideo = items[currentIndex].querySelector('video');
+        
+        if (prevVideo) prevVideo.pause();
+        if (currentVideo) currentVideo.play().catch(e => console.log(e));
+
+        // Reset progress bars
+        indicators.forEach(ind => {
+            ind.style.transform = 'translateX(-100%)';
+            ind.style.transition = 'none';
+        });
+        
+        startProgress(currentIndex);
+    }
+
+    function startProgress(index) {
+        const bar = indicators[index];
+        if (!bar) return;
+        
+        // Small delay to allow CSS transition reset
+        requestAnimationFrame(() => {
+            bar.style.transition = `transform ${interval}ms linear`;
+            bar.style.transform = 'translateX(0)';
+        });
+        
+        startTime = Date.now();
+    }
+
+    // Init
+    startProgress(0);
+    setInterval(nextSlide, interval);
+
+</script>
