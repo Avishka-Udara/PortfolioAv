@@ -8,153 +8,176 @@ import Skills from '../components/Skills.astro';
 import Clients from '../components/Clients.astro';
 import Contact from '../components/Contact.astro';
 import VisualEffects from '../components/VisualEffects.astro';
-import VideoPlayer from '../components/VideoPlayer.astro';
 import Marquee from '../components/Marquee.astro';
 import VisualCarousel from '../components/VisualCarousel.astro';
-// Asset imports logic or hardcoded paths
-const logos = [
-    { src: '/Logos_png/rates.lk_logo.png', alt: 'rates.lk' },
-    { src: '/Logos_png/HSI_logo.png', alt: 'HSI' },
-    { src: '/Logos_png/Nex_Pay_logo.png', alt: 'NexPay' },
-    { src: '/Logos_png/Bloom_logo.png', alt: 'Bloom' },
-    { src: '/Logos_png/Shishu_boutique_logo.png', alt: 'Shishu Boutique' },
-    { src: '/Logos_png/GlobalShouth_logo.png', alt: 'GlobalSouth' },
-    { src: '/Logos_png/Maatha_logo.png', alt: 'Maatha' },
-    { src: '/Logos_png/bitzIT_logo.png', alt: 'bitzIT' },
-    { src: '/Logos_png/BTI_GROUP_logo.png', alt: 'BTI Group' },
-    { src: '/Logos_png/BTI_EXCHANGE_logo.png', alt: 'BTI Exchange' },
-    { src: '/Logos_png/BTI NFT MARKETPLACE_logo.png', alt: 'BTI NFT' },
-    { src: '/Logos_png/BTI INVESTMENT FUNDS_logo.png', alt: 'BTI Funds' },
-    { src: '/Logos_png/Ceylon Releaf-01.png', alt: 'Ceylon Releaf' },
-];
+import Partnerships from '../components/Partnerships.astro';
+import { homepageShowcases, categoryMeta } from '../data/portfolioAssets';
 
-// Assets for Carousels
-const brandingAssets = [
-    { type: 'image', src: '/Graphics/JLAN_Social_Media_Cover_image.jpg', alt: 'JLAN Cover' },
-    { type: 'image', src: '/Graphics/Speraaa_Hospitaals_Business_card.jpg', alt: 'Spera Card' },
-    { type: 'image', src: '/Graphics/VitaminD3_bottle_design_and_mockup.jpg', alt: 'Vitamin D3' },
-    { type: 'image', src: '/Graphics/cute_Bunny_Package_Mockup.png', alt: 'Package Mockup' }
-];
+const logos = homepageShowcases.logos.map(({ src, alt, title }) => ({
+  src,
+  alt: alt || title
+}));
 
-const motionAssets = [
-    { type: 'video', src: '/2D/rates.lk_website_promo.mp4' },
-    { type: 'video', src: '/2D/girl_2d_animation_song.mp4' }
+const brandingAssets = homepageShowcases.branding;
+const motionAssets = homepageShowcases.motion2d;
+const spatialAssets = homepageShowcases.spatial3d;
+const partnershipLogos = [
+  {
+    name: 'BTI Group',
+    src: '/companies_and_NGO_i_works_with/BTI GROUP-02.png',
+    sector: 'Crypto Ecosystem',
+    summary: 'A full-spectrum crypto company with a broader digital asset ecosystem spanning multiple products and brand touchpoints.'
+  },
+  {
+    name: 'Global South',
+    src: '/companies_and_NGO_i_works_with/global_South_exports.png',
+    sector: 'Exports',
+    summary: 'A Sri Lankan export company focused on taking local goods to wider international markets with a stronger visual presence.'
+  },
+  {
+    name: 'HSI',
+    src: '/companies_and_NGO_i_works_with/Health_Solutions_and_Innovations.png',
+    sector: 'Integrated Medical Center',
+    summary: 'An integrated medical center with more than five branches across Sri Lanka, requiring clear and trustworthy healthcare communication.'
+  },
+  {
+    name: 'Implaza.lk',
+    src: '/companies_and_NGO_i_works_with/implaza-03.png',
+    sector: 'Web Solutions',
+    summary: 'A web solutions company where design support helps translate technical services into sharper digital communication.'
+  },
+  {
+    name: 'Kithul Delight',
+    src: '/companies_and_NGO_i_works_with/logo.png',
+    sector: 'Premium Food Brand',
+    summary: 'A premium kithul product manufacturer and distributor positioned through packaging, identity, and product-led brand storytelling.'
+  },
+  {
+    name: 'Spera Labs',
+    src: '/companies_and_NGO_i_works_with/speralabs logo.png',
+    sector: 'IT & Robotics',
+    summary: 'A Sri Lankan IT and robotics company with a future-facing profile that benefits from polished, innovative visual systems.'
+  },
+  {
+    name: 'Maatha',
+    src: '/companies_and_NGO_i_works_with/maatha_NGO.png',
+    sector: 'NGO',
+    summary: 'A Sri Lanka-based NGO whose communication work calls for warmth, clarity, and community-centered visual storytelling.'
+  },
+  {
+    name: 'Rates.lk',
+    src: '/companies_and_NGO_i_works_with/Rates.lk.png',
+    sector: 'Digital Asset Exchange',
+    summary: 'A digital assets exchange brand supported through promotional visuals, interface-facing design, and trust-building motion content.'
+  },
+  {
+    name: 'Sahana Hospitals',
+    src: '/companies_and_NGO_i_works_with/sahana hospitals.png',
+    sector: 'Private Hospital',
+    summary: 'A private hospital based in the Matara area, represented with dependable healthcare visuals and patient-friendly communication.'
+  }
 ];
-
-const spatialAssets = [
-    { type: 'video', src: '/3D/animation1.mp4' },
-    // Placeholder for other 3D content if available, e.g. re-using animation1 or static renders
-];
-
 ---
 
 <Layout title="Avishka Udara | Visual Experience">
 	<main class="relative z-10">
-        <!-- Manifesto Section -->
         <Manifesto />
 
-        <!-- Placeholder for Acts -->
         <div id="projects" class="relative z-20">
-            <!-- ACT I: Branding & Graphics -->
             <Act 
                 actNumber="ACT I"
                 title="BRAND IDENTITY"
-                subtitle="Visual Systems & Logistics"
-                description="Creating distinct visual languages for brands across diverse sectors, from healthcare to fintech. Focused on scalable, memorable identity systems."
+                subtitle="Campaign systems, packaging, and social worlds"
+                description={categoryMeta.branding.description}
                 align="left"
-                bgColor="from-purple-900/40 via-violet-900/30 to-black"
+                bgColor="from-amber-900/30 via-orange-900/20 to-black"
             >
                  <div slot="visual" class="w-full h-full relative">
-                    <!-- Carousel Background -->
                     <VisualCarousel items={brandingAssets} interval={5000} />
                 </div>
                 
                 <div class="mt-8">
                     <a href="/gallery?category=branding" class="inline-block px-8 py-4 border border-white/30 rounded-full text-white font-body text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors duration-300">
-                        View Branding Gallery
+                        Explore Branding
                     </a>
                 </div>
             </Act>
 
-            <!-- Clients Showcase -->
             <Clients logos={logos} />
 
-            <!-- ACT II: 2D Animation -->
             <Act 
                 actNumber="ACT II"
                 title="MOTION NARRATIVE"
-                subtitle="2D Motion Design & Explainer Promos"
-                description="Converting complex services into engaging visual stories. High-energy 2D motion graphics that drive conversion and understanding."
+                subtitle="Explainers, promos, loops, and animated stories"
+                description={categoryMeta['2d'].description}
                 align="right"
-                bgColor="from-cyan-900/40 via-blue-900/30 to-black"
+                bgColor="from-fuchsia-900/30 via-pink-900/20 to-black"
             >
                 <div slot="visual" class="w-full h-full">
-                     <VisualCarousel items={motionAssets} interval={10000} />
+                     <VisualCarousel items={motionAssets} interval={9000} />
                 </div>
                 
                 <div class="mt-8">
                     <a href="/gallery?category=2d" class="inline-block px-8 py-4 border border-white/30 rounded-full text-white font-body text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors duration-300">
-                        View Motion Gallery
+                        Explore Motion
                     </a>
                 </div>
             </Act>
 
-            <!-- ACT III: 3D Animation -->
             <Act 
                 actNumber="ACT III"
                 title="SPATIAL DEPTH"
-                subtitle="Product & Environment Design"
-                description="Pushing boundaries with 3D renderings and spatial design. Creating photorealistic environments and stylized assets for immersive experiences."
+                subtitle="Rendered objects, scenes, and dimensional motion"
+                description={categoryMeta['3d'].description}
                 align="center"
-                bgColor="from-emerald-900/40 via-teal-900/30 to-black"
+                bgColor="from-emerald-900/30 via-teal-900/20 to-black"
             >
                 <div slot="visual" class="w-full h-full">
-                     <VisualCarousel items={spatialAssets} interval={10000} />
+                     <VisualCarousel items={spatialAssets} interval={9000} />
                 </div>
                 
                  <div class="mt-8">
                     <a href="/gallery?category=3d" class="inline-block px-8 py-4 border border-white/30 rounded-full text-white font-body text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors duration-300">
-                        View 3D Gallery
+                        Explore 3D
                     </a>
                 </div>
             </Act>
         </div>
 
+        <Partnerships partners={partnershipLogos} />
+
+        <Marquee items={logos} speed={32} />
         <Skills />
-    <!-- Gallery CTA Button - Scroll-triggered -->
-    <a href="/gallery" id="gallery-cta" class="fixed top-8 right-8 z-[100] opacity-0 pointer-events-none transition-all duration-500" style="transform: translateY(-100px)">
-        <div class="gallery-cta-btn group relative">
-            <!-- Particles -->
-            <div class="particle particle-1 absolute w-2 h-2 rounded-full bg-red-500/60"></div>
-            <div class="particle particle-2 absolute w-2 h-2 rounded-full bg-red-500/60"></div>
-            <div class="particle particle-3 absolute w-2 h-2 rounded-full bg-red-500/60"></div>
-            
-            <!-- Button -->
-            <div class="relative flex items-center gap-3 px-6 py-3 bg-black/80 backdrop-blur-xl rounded-full border border-white/20 group-hover:border-red-500 group-hover:bg-red-500/10 transition-all duration-500 hover-float">
-                <!-- Glow -->
-                <div class="absolute inset-0 rounded-full bg-red-500/30 scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 blur-md transition-all duration-700"></div>
+
+        <a href="/gallery" id="gallery-cta" class="fixed top-8 right-8 z-[100] opacity-0 pointer-events-none transition-all duration-500" style="transform: translateY(-100px)">
+            <div class="gallery-cta-btn group relative">
+                <div class="particle particle-1 absolute w-2 h-2 rounded-full bg-red-500/60"></div>
+                <div class="particle particle-2 absolute w-2 h-2 rounded-full bg-red-500/60"></div>
+                <div class="particle particle-3 absolute w-2 h-2 rounded-full bg-red-500/60"></div>
                 
-                <div class="relative flex items-center gap-3">
-                    <!-- Live indicator -->
-                    <div class="w-6 h-6 relative">
-                        <div class="absolute inset-0 bg-gradient-to-br from-red-500 to-red-600 rounded-full animate-pulse"></div>
-                        <div class="absolute inset-0.5 bg-black rounded-full flex items-center justify-center">
-                            <div class="w-2 h-2 bg-red-500 rounded-full group-hover:animate-ping"></div>
+                <div class="relative flex items-center gap-3 px-6 py-3 bg-black/80 backdrop-blur-xl rounded-full border border-white/20 group-hover:border-red-500 group-hover:bg-red-500/10 transition-all duration-500 hover-float">
+                    <div class="absolute inset-0 rounded-full bg-red-500/30 scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 blur-md transition-all duration-700"></div>
+                    
+                    <div class="relative flex items-center gap-3">
+                        <div class="w-6 h-6 relative">
+                            <div class="absolute inset-0 bg-gradient-to-br from-red-500 to-red-600 rounded-full animate-pulse"></div>
+                            <div class="absolute inset-0.5 bg-black rounded-full flex items-center justify-center">
+                                <div class="w-2 h-2 bg-red-500 rounded-full group-hover:animate-ping"></div>
+                            </div>
                         </div>
+                        
+                        <span class="font-body text-xs uppercase tracking-[0.2em] text-white group-hover:text-red-400 transition-colors font-medium">
+                            View My Works
+                        </span>
+                        
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-white/60 group-hover:text-red-500 group-hover:translate-x-1 transition-all">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
                     </div>
-                    
-                    <span class="font-body text-xs uppercase tracking-[0.2em] text-white group-hover:text-red-400 transition-colors font-medium">
-                        View My Works
-                    </span>
-                    
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-white/60 group-hover:text-red-500 group-hover:translate-x-1 transition-all">
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                        <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
                 </div>
             </div>
-        </div>
-    </a>
+        </a>
 
         <Contact />
 	</main>
@@ -162,7 +185,6 @@ const spatialAssets = [
     <Navigation />
     <VisualEffects />
     
-    <!-- Background Canvas -->
     <div class="fixed inset-0 -z-10 bg-[#050505]">
         <ThreeBackground />
     </div>

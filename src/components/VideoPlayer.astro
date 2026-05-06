@@ -1,4 +1,6 @@
 ---
+import { toEncodedAssetPath } from '../data/portfolioAssets';
+
 interface Props {
   src: string;
   poster?: string;
@@ -10,13 +12,13 @@ interface Props {
 }
 
 const { src, poster, autoplay = true, loop = true, muted = true, controls = false, class: className } = Astro.props;
+const encodedSrc = toEncodedAssetPath(src);
 ---
 
 <div class={`video-container relative overflow-hidden rounded-lg bg-neutral-900 ${className}`}>
   <video
-    src={src}
+    src={encodedSrc}
     poster={poster}
-    autoplay={autoplay}
     loop={loop}
     muted={muted}
     playsinline
@@ -39,9 +41,8 @@ const { src, poster, autoplay = true, loop = true, muted = true, controls = fals
   )}
 </div>
 
-<script>
-  // Lazy play videos only when they are in viewport
-  const videos = document.querySelectorAll('video[autoplay].video-player');
+<script define:vars={{ autoplay }}>
+  const videos = document.querySelectorAll('.video-player');
   
   // Setup error handlers
   videos.forEach(video => {
@@ -66,8 +67,8 @@ const { src, poster, autoplay = true, loop = true, muted = true, controls = fals
   
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      const video = entry.target as HTMLVideoElement;
-      if (entry.isIntersecting) {
+      const video = entry.target;
+      if (entry.isIntersecting && autoplay) {
         video.play().catch((e) => {
           // Auto-play might be blocked by browser policy
           console.log('Autoplay blocked:', e);

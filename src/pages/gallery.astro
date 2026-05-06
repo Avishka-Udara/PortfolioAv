@@ -3,498 +3,498 @@ import Layout from '../layouts/Layout.astro';
 import Navigation from '../components/Navigation.astro';
 import Contact from '../components/Contact.astro';
 import VisualEffects from '../components/VisualEffects.astro';
+import {
+  categoryMeta,
+  portfolioAssets,
+  toEncodedAssetPath,
+  type PortfolioCategory
+} from '../data/portfolioAssets';
 
-// Gallery Data - Comprehensive Collection
-const galleryItems = [
-    // === BRANDING & GRAPHICS ===
-    { id: 1, type: 'image', category: 'branding', src: '/Graphics/8b_social_media_post.jpg', alt: '8b Social Media' },
-    { id: 2, type: 'image', category: 'branding', src: '/Graphics/CackeBySaandali_Post.jpg', alt: 'Cake by Saandali' },
-    { id: 3, type: 'image', category: 'branding', src: '/Graphics/JLAN_Social_Media_Cover_image.jpg', alt: 'JLAN Cover' },
-    { id: 4, type: 'image', category: 'branding', src: '/Graphics/JLAN_social_media_post.jpg', alt: 'JLAN Post' },
-    { id: 5, type: 'image', category: 'branding', src: '/Graphics/KIRULA_Social_Media_Cover_Image.jpg', alt: 'Kirula Cover' },
-    { id: 6, type: 'image', category: 'branding', src: '/Graphics/Newline_post_design.jpg', alt: 'Newline Post' },
-    { id: 7, type: 'image', category: 'branding', src: '/Graphics/ROST_logo_release_mockup.jpg', alt: 'ROST Mockup' },
-    { id: 8, type: 'image', category: 'branding', src: '/Graphics/Spera_Hospital_social_media_promo.jpg', alt: 'Spera Promo' },
-    { id: 9, type: 'image', category: 'branding', src: '/Graphics/Speraaa_Hospitaals_Business_card.jpg', alt: 'Spera Card' },
-    { id: 10, type: 'image', category: 'branding', src: '/Graphics/VitaminD3_bottle_design_and_mockup.jpg', alt: 'Vitamin D3' },
-    { id: 11, type: 'image', category: 'branding', src: '/Graphics/Youtube_thumbnail.jpg', alt: 'YouTube Thumbnail' },
-    { id: 12, type: 'image', category: 'branding', src: '/Graphics/car_Details_post.jpg', alt: 'Car Details' },
-    { id: 13, type: 'image', category: 'branding', src: '/Graphics/cute_Bunny_Package_Mockup.png', alt: 'Bunny Package' },
-    { id: 14, type: 'image', category: 'branding', src: '/Graphics/get_brand_social_media_post.jpg', alt: 'Get Brand' },
-    { id: 15, type: 'image', category: 'branding', src: '/Graphics/playstore_feature_image_design.jpg', alt: 'Playstore Feature' },
-    { id: 16, type: 'image', category: 'branding', src: '/Graphics/rate_card.jpg', alt: 'Rate Card' },
-    { id: 17, type: 'image', category: 'branding', src: '/Graphics/rates.lk_post.jpg', alt: 'Rates.lk Post' },
-    { id: 18, type: 'image', category: 'branding', src: '/Graphics/slfast_Social_media_post.jpg', alt: 'SLFast' },
-    { id: 19, type: 'image', category: 'branding', src: '/Graphics/smas_property_social_media_Post.jpg', alt: 'Smas Property' },
-    { id: 20, type: 'image', category: 'branding', src: '/Graphics/woumen_day_post_spera_labs.jpg', alt: 'Women Day' },
-    { id: 21, type: 'image', category: 'branding', src: '/Graphics/Box_Mockup_2.jpg', alt: 'Box Mockup' },
-    { id: 22, type: 'image', category: 'branding', src: '/Graphics/Felx_Designs/flex 2.5X5-01.jpg', alt: 'Flex Design' },
-    { id: 23, type: 'image', category: 'branding', src: '/Graphics/HSI_SocialMedia_post/02-01.jpg', alt: 'HSI Post 1' },
-    { id: 24, type: 'image', category: 'branding', src: '/Graphics/HSI_SocialMedia_post/P01-01.jpg', alt: 'HSI Post 2' },
-    
-    // === LOGOS ===
-    { id: 101, type: 'image', category: 'logos', src: '/Logos_png/rates.lk_logo.png', alt: 'rates.lk Logo' },
-    { id: 102, type: 'image', category: 'logos', src: '/Logos_png/HSI_logo.png', alt: 'HSI Logo' },
-    { id: 103, type: 'image', category: 'logos', src: '/Logos_png/Nex_Pay_logo.png', alt: 'NexPay Logo' },
-    { id: 104, type: 'image', category: 'logos', src: '/Logos_png/Bloom_logo.png', alt: 'Bloom Logo' },
-    { id: 105, type: 'image', category: 'logos', src: '/Logos_png/Shishu_boutique_logo.png', alt: 'Shishu Logo' },
-    { id: 106, type: 'image', category: 'logos', src: '/Logos_png/GlobalShouth_logo.png', alt: 'GlobalSouth Logo' },
-    { id: 107, type: 'image', category: 'logos', src: '/Logos_png/Ceylon_Bet_logo.jpg', alt: 'CeylonBet Logo' },
-    { id: 108, type: 'image', category: 'logos', src: '/Logos_png/Maatha_logo.png', alt: 'Maatha Logo' },
-    { id: 109, type: 'image', category: 'logos', src: '/Logos_png/bitzIT_logo.png', alt: 'bitzIT Logo' },
-    
-    // === 2D MOTION ===
-    { id: 201, type: 'video', category: '2d', src: '/2D/rates.lk_website_promo.mp4', alt: 'Rates.lk Promo' },
-    { id: 202, type: 'video', category: '2d', src: '/2D/girl_2d_animation_song.mp4', alt: '2D Music Animation' },
-    { id: 203, type: 'video', category: '2d', src: '/2D/An 57 ver.mp4', alt: 'Animation 57' },
-    { id: 204, type: 'video', category: '2d', src: '/2D/An 95.4.mp4', alt: 'Animation 95' },
-    { id: 205, type: 'video', category: '2d', src: '/2D/An103 QTG_logo_animation.mp4', alt: 'QTG Logo Animation' },
-    { id: 206, type: 'video', category: '2d', src: '/2D/An108-2.mp4', alt: 'Animation 108' },
-    { id: 207, type: 'video', category: '2d', src: '/2D/An116.2.mp4', alt: 'Animation 116' },
-    { id: 208, type: 'video', category: '2d', src: '/2D/An118.mp4', alt: 'Animation 118' },
-    { id: 209, type: 'video', category: '2d', src: '/2D/An31.mp4', alt: 'Animation 31' },
-    { id: 210, type: 'video', category: '2d', src: '/2D/An83.vertical.mp4', alt: 'Vertical Animation 83' },
-    { id: 211, type: 'video', category: '2d', src: '/2D/An85.mp4', alt: 'Animation 85' },
-    { id: 212, type: 'video', category: '2d', src: '/2D/An88.mp4', alt: 'Animation 88' },
-    { id: 213, type: 'video', category: '2d', src: '/2D/An93 s.mp4', alt: 'Animation 93' },
-    { id: 214, type: 'video', category: '2d', src: '/2D/66.mp4', alt: 'Animation 66' },
-    { id: 215, type: 'video', category: '2d', src: '/2D/D179 9X16 s.mp4', alt: 'Vertical Promo' },
-    { id: 216, type: 'video', category: '2d', src: '/2D/an25 - text based  ugc.mp4', alt: 'Text-Based UGC' },
-    { id: 217, type: 'video', category: '2d', src: '/2D/promo 1.2.mp4', alt: 'Promo Animation' },
-    
-    // === 3D SPATIAL ===
-    { id: 301, type: 'video', category: '3d', src: '/3D/animation1.mp4', alt: '3D Flagship' },
-    { id: 302, type: 'video', category: '3d', src: '/3D/logo_animation.mp4', alt: '3D Logo Animation' },
-    { id: 303, type: 'video', category: '3d', src: '/3D/An120.mp4', alt: '3D Animation 120' },
-    { id: 304, type: 'video', category: '3d', src: '/3D/An124_1.mp4', alt: '3D Animation 124' },
-    { id: 305, type: 'video', category: '3d', src: '/3D/An127.2.mp4', alt: '3D Animation 127' },
-    { id: 306, type: 'video', category: '3d', src: '/3D/An96 ver.mp4', alt: '3D Animation 96' },
-    { id: 307, type: 'video', category: '3d', src: '/3D/BTI NFT MARKETPLACE0001-0240.mp4', alt: 'NFT Marketplace' },
-    { id: 308, type: 'video', category: '3d', src: '/3D/an128 s.mp4', alt: '3D Animation 128' },
-    { id: 309, type: 'video', category: '3d', src: '/3D/an33.mp4', alt: '3D Animation 33' },
-    { id: 310, type: 'video', category: '3d', src: '/3D/an350001-0165.mp4', alt: '3D Animation 35' },
-    { id: 311, type: 'video', category: '3d', src: '/3D/an67.mp4', alt: '3D Animation 67' },
-    { id: 312, type: 'video', category: '3d', src: '/3D/0080-1500_1.mp4', alt: '3D Motion Graphics' },
-    
-    // 3D Renders (Images)
-    { id: 350, type: 'image', category: '3d', src: '/3D/chair_model_images/chair 02.png', alt: 'Chair Render 1' },
-    { id: 351, type: 'image', category: '3d', src: '/3D/chair_model_images/chair 03.png', alt: 'Chair Render 2' },
-    { id: 352, type: 'image', category: '3d', src: '/3D/chair_model_images/chair 04.png', alt: 'Chair Render 3' },
-    { id: 353, type: 'image', category: '3d', src: '/3D/chair_model_images/chair 05.png', alt: 'Chair Render 4' },
-    { id: 354, type: 'image', category: '3d', src: '/3D/chair_model_images/chair 06.png', alt: 'Chair Render 5' },
-    { id: 355, type: 'image', category: '3d', src: '/3D/table_model_images/table v2-1.png', alt: 'Table Render 1' },
-    { id: 356, type: 'image', category: '3d', src: '/3D/table_model_images/table v2-2.png', alt: 'Table Render 2' },
-    { id: 357, type: 'image', category: '3d', src: '/3D/table_model_images/table v2-3.png', alt: 'Table Render 3' },
-    { id: 358, type: 'image', category: '3d', src: '/3D/table_model_images/table v2-4.png', alt: 'Table Render 4' },
-    { id: 359, type: 'image', category: '3d', src: '/3D/table_model_images/table v2-5.png', alt: 'Table Render 5' },
-    { id: 360, type: 'image', category: '3d', src: '/3D/coin/02.png', alt: 'Coin Render 1' },
-    { id: 361, type: 'image', category: '3d', src: '/3D/coin/03.png', alt: 'Coin Render 2' },
-    { id: 362, type: 'image', category: '3d', src: '/3D/coin/04.png', alt: 'Coin Render 3' },
-    { id: 363, type: 'image', category: '3d', src: '/3D/coin/closeup0032.png', alt: 'Coin Closeup 1' },
-    { id: 364, type: 'image', category: '3d', src: '/3D/coin/closeup1.png', alt: 'Coin Closeup 2' },
-];
+const categories = ['branding', 'logos', '2d', '3d'] as PortfolioCategory[];
+const totalVideos = portfolioAssets.filter((asset) => asset.type === 'video').length;
+const totalImages = portfolioAssets.filter((asset) => asset.type === 'image').length;
+const featuredAssets = categories
+  .map((category) => portfolioAssets.find((asset) => asset.category === category))
+  .filter(Boolean);
+const categoryCounts = Object.fromEntries(
+  categories.map((category) => [
+    category,
+    portfolioAssets.filter((asset) => asset.category === category).length
+  ])
+);
 ---
 
-<Layout title="Works Library | Avishka Udara">
+<Layout title="Works Library | Avishka Udara" description="A cinematic archive of branding, logos, 2D motion, 3D renders, and animation work by Avishka Udara.">
     <Navigation />
     <VisualEffects />
 
-    <main class="min-h-screen bg-black text-white pt-24 pb-12 px-4 md:px-8">
-        
-        <!-- Back Button (Fixed Position) -->
-        <a href="/" class="fixed top-8 left-8 z-50 group flex items-center space-x-3 px-6 py-3 border border-white/20 rounded-full hover:bg-white hover:text-black transition-all duration-300 backdrop-blur-sm bg-black/40">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform group-hover:-translate-x-1 transition-transform duration-300">
+    <main class="gallery-shell relative min-h-screen overflow-hidden bg-[#050505] text-white">
+        <div class="pointer-events-none absolute inset-0 opacity-80">
+            <div class="absolute left-[-10%] top-0 h-[40rem] w-[40rem] rounded-full bg-orange-500/12 blur-[140px]"></div>
+            <div class="absolute right-[-8%] top-[18%] h-[34rem] w-[34rem] rounded-full bg-cyan-500/12 blur-[140px]"></div>
+            <div class="absolute bottom-[-12%] left-[30%] h-[30rem] w-[30rem] rounded-full bg-fuchsia-500/10 blur-[140px]"></div>
+        </div>
+
+        <a href="/" class="fixed left-4 top-5 z-50 flex items-center gap-3 rounded-full border border-white/15 bg-black/45 px-5 py-3 text-sm uppercase tracking-[0.24em] text-white/80 backdrop-blur-xl transition-all duration-300 hover:border-white/40 hover:bg-white hover:text-black md:left-8 md:top-8">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
-            <span class="font-body text-sm uppercase tracking-widest">Back</span>
+            <span>Home</span>
         </a>
-        
-        <!-- Header -->
-        <header class="max-w-7xl mx-auto mb-16 text-center">
-            <h1 class="font-display text-6xl md:text-8xl font-bold mb-6">LIBRARY</h1>
-            
-            <!-- Filter Bar -->
-            <div class="flex flex-wrap justify-center gap-4 filter-buttons">
-                <button class="filter-btn active px-6 py-2 rounded-full border border-white/20 hover:bg-white hover:text-black transition-all text-sm uppercase tracking-widest" data-filter="all">All</button>
-                <button class="filter-btn px-6 py-2 rounded-full border border-white/20 hover:bg-white hover:text-black transition-all text-sm uppercase tracking-widest" data-filter="branding">Branding</button>
-                <button class="filter-btn px-6 py-2 rounded-full border border-white/20 hover:bg-white hover:text-black transition-all text-sm uppercase tracking-widest" data-filter="logos">Logos</button>
-                <button class="filter-btn px-6 py-2 rounded-full border border-white/20 hover:bg-white hover:text-black transition-all text-sm uppercase tracking-widest" data-filter="2d">Motion (2D)</button>
-                <button class="filter-btn px-6 py-2 rounded-full border border-white/20 hover:bg-white hover:text-black transition-all text-sm uppercase tracking-widest" data-filter="3d">Spatial (3D)</button>
-            </div>
-        </header>
 
-        <!-- Gallery Grid -->
-        <div class="max-w-[1920px] mx-auto columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8 min-h-screen">
-            {galleryItems.map((item) => (
-                <div class={`gallery-item break-inside-avoid mb-8 group relative rounded-xl overflow-hidden bg-neutral-900 border border-white/5 cursor-pointer`} data-category={item.category} data-src={item.src} data-type={item.type}>
-                    {item.type === 'video' ? (
-                        <div class="relative w-full aspect-video">
-                            <video 
-                                src={item.src.split('/').map(p => encodeURIComponent(p)).join('/')} 
-                                class="gallery-video w-full h-full object-cover" 
-                                muted 
-                                playsinline 
-                                loop 
-                                preload="none"
-                                poster=""
-                                onmouseover="this.play()" 
-                                onmouseout="this.pause(); this.currentTime = 0;"
-                            ></video>
-                            <!-- Video Error Fallback -->
-                            <div class="gallery-video-error hidden absolute inset-0 bg-gradient-to-br from-gray-900 to-black flex flex-col items-center justify-center text-white/40">
-                                <svg class="w-12 h-12 mb-2 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                </svg>
-                                <p class="font-body text-xs uppercase tracking-wider">Media Error</p>
-                            </div>
-                            <div class="video-play-overlay absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-300 group-hover:opacity-70">
-                                <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center">
-                                    <div class="w-0 h-0 border-t-[8px] border-t-transparent border-l-[12px] border-l-white border-b-[8px] border-b-transparent ml-1"></div>
-                                </div>
-                            </div>
-                        </div>
-                    ) : (
-                        <div class="relative w-full">
-                            <img 
-                                src={item.src} 
-                                alt={item.alt} 
-                                loading="lazy" 
-                                class="gallery-image w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105" 
-                            />
-                            <!-- Image Error Fallback -->
-                            <div class="gallery-image-error hidden absolute inset-0 bg-gradient-to-br from-gray-900 to-black flex flex-col items-center justify-center text-white/40">
-                                <svg class="w-12 h-12 mb-2 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                <p class="font-body text-xs uppercase tracking-wider">Image Error</p>
-                            </div>
-                        </div>
-                    )}
-                    
-                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
-                        <span class="text-xs font-mono text-red-500 uppercase tracking-widest">{item.category}</span>
+        <section class="relative isolate px-4 pb-14 pt-28 md:px-8 md:pb-20 md:pt-36">
+            <div class="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-end">
+                <div>
+                    <p class="mb-5 text-xs uppercase tracking-[0.4em] text-white/45">Works Library</p>
+                    <h1 class="max-w-4xl font-display text-5xl font-semibold leading-[0.9] text-white md:text-7xl lg:text-[6.5rem]">
+                        Every graphic, logo, render, and animation in one live showcase.
+                    </h1>
+                    <p class="mt-6 max-w-2xl text-base leading-7 text-white/70 md:text-lg">
+                        This archive now pulls directly from the real files inside the public library, so the portfolio reflects the full body of work instead of a partial manual list.
+                    </p>
+                </div>
+
+                <div class="grid gap-4 sm:grid-cols-3 lg:grid-cols-2">
+                    <div class="rounded-[2rem] border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
+                        <p class="text-xs uppercase tracking-[0.28em] text-white/45">Assets</p>
+                        <p class="mt-3 font-display text-4xl text-white">{portfolioAssets.length}</p>
+                    </div>
+                    <div class="rounded-[2rem] border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
+                        <p class="text-xs uppercase tracking-[0.28em] text-white/45">Videos</p>
+                        <p class="mt-3 font-display text-4xl text-white">{totalVideos}</p>
+                    </div>
+                    <div class="rounded-[2rem] border border-white/10 bg-white/5 p-5 backdrop-blur-xl sm:col-span-1 lg:col-span-2">
+                        <p class="text-xs uppercase tracking-[0.28em] text-white/45">Stills</p>
+                        <p class="mt-3 font-display text-4xl text-white">{totalImages}</p>
                     </div>
                 </div>
-            ))}
-        </div>
-        
+            </div>
+        </section>
+
+        <section class="px-4 md:px-8">
+            <div class="mx-auto max-w-7xl">
+                <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <p class="text-xs uppercase tracking-[0.3em] text-white/40">Featured Sweep</p>
+                        <h2 class="mt-2 font-display text-3xl text-white md:text-4xl">A quick scan across the full visual range.</h2>
+                    </div>
+                    <div class="filter-buttons flex flex-wrap gap-3">
+                        <button class="filter-btn rounded-full border border-white/15 bg-white text-black px-5 py-2.5 text-xs uppercase tracking-[0.28em] transition-all duration-300" data-filter="all">All</button>
+                        {categories.map((category) => (
+                            <button class="filter-btn rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-xs uppercase tracking-[0.28em] text-white/75 transition-all duration-300 hover:border-white/35 hover:bg-white hover:text-black" data-filter={category}>
+                                {categoryMeta[category].label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                    {featuredAssets.map((asset) => (
+                        <article class={`featured-card relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-3 backdrop-blur-xl`} data-category={asset.category}>
+                            <div class="relative aspect-[4/5] overflow-hidden rounded-[1.4rem] bg-black/60">
+                                {asset.type === 'video' ? (
+                                    <video
+                                        src={toEncodedAssetPath(asset.src)}
+                                        class="featured-video h-full w-full object-cover"
+                                        muted
+                                        loop
+                                        playsinline
+                                        preload="metadata"
+                                        data-autoplay-video
+                                    ></video>
+                                ) : (
+                                    <img
+                                        src={toEncodedAssetPath(asset.src)}
+                                        alt={asset.alt}
+                                        class="h-full w-full object-cover"
+                                        loading="lazy"
+                                    />
+                                )}
+                                <div class={`absolute inset-0 bg-gradient-to-t ${categoryMeta[asset.category].accent} opacity-20 mix-blend-screen`}></div>
+                            </div>
+                            <div class="px-2 pb-2 pt-4">
+                                <p class="text-[0.68rem] uppercase tracking-[0.3em] text-white/45">{categoryMeta[asset.category].eyebrow}</p>
+                                <h3 class="mt-2 font-display text-2xl text-white">{categoryMeta[asset.category].label}</h3>
+                                <p class="mt-2 text-sm leading-6 text-white/65">{categoryMeta[asset.category].description}</p>
+                            </div>
+                        </article>
+                    ))}
+                </div>
+            </div>
+        </section>
+
+        <section class="px-4 py-14 md:px-8 md:py-20">
+            <div class="mx-auto max-w-7xl">
+                <div class="mb-10 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+                    <div>
+                        <p class="text-xs uppercase tracking-[0.3em] text-white/40">Archive Grid</p>
+                        <h2 class="mt-2 font-display text-4xl text-white md:text-5xl">A cleaner, more reliable gallery wall.</h2>
+                    </div>
+                    <div class="flex flex-wrap gap-3 text-xs uppercase tracking-[0.24em] text-white/50">
+                        {categories.map((category) => (
+                            <div class="rounded-full border border-white/10 bg-white/5 px-4 py-2">
+                                {categoryMeta[category].label} · {categoryCounts[category]}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div class="gallery-grid columns-1 gap-6 space-y-6 md:columns-2 xl:columns-3" data-gallery-grid>
+                    {portfolioAssets.map((asset) => (
+                        <article
+                            class={`gallery-card break-inside-avoid rounded-[2rem] border border-white/10 bg-white/[0.04] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-xl transition-transform duration-500 hover:-translate-y-1`}
+                            data-category={asset.category}
+                            data-type={asset.type}
+                            data-src={asset.src}
+                            data-title={asset.title}
+                            data-collection={asset.collection}
+                            data-alt={asset.alt}
+                        >
+                            <div class={`relative overflow-hidden rounded-[1.5rem] bg-black/60 ${asset.category === 'logos' ? 'aspect-[4/3]' : asset.category === '2d' ? 'aspect-[4/5]' : 'aspect-[4/4.8]'}`}>
+                                {asset.type === 'video' ? (
+                                    <video
+                                        src={toEncodedAssetPath(asset.src)}
+                                        class="gallery-video h-full w-full object-cover"
+                                        muted
+                                        loop
+                                        playsinline
+                                        preload="metadata"
+                                        data-autoplay-video
+                                    ></video>
+                                ) : (
+                                    <img
+                                        src={toEncodedAssetPath(asset.src)}
+                                        alt={asset.alt}
+                                        loading="lazy"
+                                        class={`gallery-image h-full w-full ${asset.category === 'logos' ? 'object-contain p-8' : 'object-cover'} transition-transform duration-700 group-hover:scale-105`}
+                                    />
+                                )}
+
+                                <div class="media-error pointer-events-none absolute inset-0 hidden items-center justify-center bg-gradient-to-br from-zinc-950 to-black text-center text-white/55">
+                                    <div class="px-6">
+                                        <p class="text-xs uppercase tracking-[0.26em]">Media unavailable</p>
+                                        <p class="mt-2 text-sm text-white/35">{asset.filename}</p>
+                                    </div>
+                                </div>
+
+                                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/15 to-transparent opacity-90"></div>
+                                <div class={`pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t ${categoryMeta[asset.category].accent} opacity-20 blur-2xl`}></div>
+
+                                {asset.type === 'video' ? (
+                                    <div class="pointer-events-none absolute right-4 top-4 rounded-full border border-white/15 bg-black/45 px-3 py-1.5 text-[0.64rem] uppercase tracking-[0.28em] text-white/70 backdrop-blur-xl">
+                                        Motion
+                                    </div>
+                                ) : (
+                                    <div class="pointer-events-none absolute right-4 top-4 rounded-full border border-white/15 bg-black/45 px-3 py-1.5 text-[0.64rem] uppercase tracking-[0.28em] text-white/70 backdrop-blur-xl">
+                                        Still
+                                    </div>
+                                )}
+                            </div>
+
+                            <div class="flex items-end justify-between gap-4 px-1 pb-2 pt-4">
+                                <div>
+                                    <p class="text-[0.68rem] uppercase tracking-[0.3em] text-white/40">{asset.collection}</p>
+                                    <h3 class="mt-2 font-display text-2xl leading-tight text-white">{asset.title}</h3>
+                                </div>
+                                <span class="shrink-0 text-[0.68rem] uppercase tracking-[0.3em] text-white/35">{categoryMeta[asset.category].label}</span>
+                            </div>
+                        </article>
+                    ))}
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- Enhanced Lightbox with Navigation -->
-    <div id="lightbox" class="fixed inset-0 z-[100] bg-black/98 hidden items-center justify-center opacity-0 transition-opacity duration-300">
-        <!-- Close Button -->
-        <button id="lightbox-close" class="fixed top-8 right-8 text-white/70 hover:text-white transition-colors z-[102] group">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:rotate-90 transition-transform duration-300">
+    <div id="lightbox" class="fixed inset-0 z-[100] hidden bg-black/95 opacity-0 transition-opacity duration-300">
+        <button id="lightbox-close" class="fixed right-5 top-5 z-[102] rounded-full border border-white/15 bg-black/50 p-3 text-white/70 backdrop-blur-xl transition-colors hover:text-white md:right-8 md:top-8">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
         </button>
-        
-        <!-- Previous Button -->
-        <button id="lightbox-prev" class="fixed left-4 md:left-12 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-all z-[102] group hover:scale-110">
-            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="drop-shadow-2xl">
+
+        <button id="lightbox-prev" class="fixed left-3 top-1/2 z-[102] -translate-y-1/2 rounded-full border border-white/10 bg-black/45 p-3 text-white/55 backdrop-blur-xl transition-all hover:text-white md:left-8">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
         </button>
-        
-        <!-- Next Button -->
-        <button id="lightbox-next" class="fixed right-4 md:right-12 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-all z-[102] group hover:scale-110">
-            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="drop-shadow-2xl">
+
+        <button id="lightbox-next" class="fixed right-3 top-1/2 z-[102] -translate-y-1/2 rounded-full border border-white/10 bg-black/45 p-3 text-white/55 backdrop-blur-xl transition-all hover:text-white md:right-8">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
         </button>
-        
-        <!-- Counter -->
-        <div id="lightbox-counter" class="fixed bottom-8 left-1/2 -translate-x-1/2 text-white/60 font-mono text-sm tracking-wider z-[102]">
-            <span id="counter-current">1</span> / <span id="counter-total">1</span>
-        </div>
-        
-        <!-- Main Content Container -->
-        <div id="lightbox-content" class="relative w-full h-full max-w-[90vw] max-h-[85vh] flex items-center justify-center px-4">
-            <!-- Content injected via JS -->
+
+        <div class="flex h-full w-full items-center justify-center px-4 py-20 md:px-10">
+            <div class="grid w-full max-w-7xl gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-end">
+                <div id="lightbox-content" class="relative flex min-h-[40vh] items-center justify-center overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] p-3 backdrop-blur-2xl"></div>
+                <div class="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 backdrop-blur-2xl">
+                    <p id="lightbox-category" class="text-[0.68rem] uppercase tracking-[0.3em] text-white/45"></p>
+                    <h3 id="lightbox-title" class="mt-3 font-display text-3xl text-white"></h3>
+                    <p id="lightbox-collection" class="mt-3 text-sm leading-6 text-white/65"></p>
+                    <div class="mt-8 flex items-center justify-between text-xs uppercase tracking-[0.28em] text-white/40">
+                        <span id="lightbox-position">1 / 1</span>
+                        <span>Esc to close</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
     <Contact />
 </Layout>
 
-<script define:vars={{galleryItems}}>
-    // Filtering Logic
-    const buttons = document.querySelectorAll('.filter-btn');
-    const items = document.querySelectorAll('.gallery-item');
+<script define:vars={{ categoryMeta }}>
+    const buttons = Array.from(document.querySelectorAll('.filter-btn'));
+    const cards = Array.from(document.querySelectorAll('.gallery-card'));
+    const featuredCards = Array.from(document.querySelectorAll('.featured-card'));
+    const autoVideos = Array.from(document.querySelectorAll('[data-autoplay-video]'));
 
-    // Get query param
-    const params = new URLSearchParams(window.location.search);
-    const initialCategory = params.get('category') || 'all';
-    
-    // Setup error handlers for all gallery media
-    function setupMediaErrorHandlers() {
-        // Handle video errors
-        document.querySelectorAll('.gallery-video').forEach((video) => {
-            const container = video.closest('.gallery-item');
-            const errorUI = container?.querySelector('.gallery-video-error');
-            
-            video.addEventListener('error', (e) => {
-                console.warn('Gallery video failed to load:', video.src, e);
-                video.classList.add('hidden');
-                if (errorUI) {
-                    errorUI.classList.remove('hidden');
-                }
-            });
-            
-            video.addEventListener('loadeddata', () => {
-                video.classList.remove('hidden');
-                if (errorUI) {
-                    errorUI.classList.add('hidden');
-                }
-            });
-        });
-        
-        // Handle image errors
-        document.querySelectorAll('.gallery-image').forEach((img) => {
-            const container = img.closest('.gallery-item');
-            const errorUI = container?.querySelector('.gallery-image-error');
-            
-            img.addEventListener('error', (e) => {
-                console.warn('Gallery image failed to load:', img.src, e);
-                img.classList.add('hidden');
-                if (errorUI) {
-                    errorUI.classList.remove('hidden');
-                }
-            });
-            
-            img.addEventListener('load', () => {
-                img.classList.remove('hidden');
-                if (errorUI) {
-                    errorUI.classList.add('hidden');
-                }
-            });
+    const lightbox = document.getElementById('lightbox');
+    const lightboxContent = document.getElementById('lightbox-content');
+    const lightboxClose = document.getElementById('lightbox-close');
+    const lightboxPrev = document.getElementById('lightbox-prev');
+    const lightboxNext = document.getElementById('lightbox-next');
+    const lightboxTitle = document.getElementById('lightbox-title');
+    const lightboxCategory = document.getElementById('lightbox-category');
+    const lightboxCollection = document.getElementById('lightbox-collection');
+    const lightboxPosition = document.getElementById('lightbox-position');
+
+    let visibleCards = [];
+    let currentIndex = 0;
+
+    function setButtonState(activeFilter) {
+        buttons.forEach((button) => {
+            const isActive = button.dataset.filter === activeFilter;
+            button.classList.toggle('bg-white', isActive);
+            button.classList.toggle('text-black', isActive);
+            button.classList.toggle('bg-white/5', !isActive);
+            button.classList.toggle('text-white/75', !isActive);
         });
     }
 
     function filterGallery(category) {
-        // Update buttons
-        buttons.forEach(btn => {
-            if(btn.dataset.filter === category) btn.classList.add('bg-white', 'text-black');
-            else btn.classList.remove('bg-white', 'text-black');
+        cards.forEach((card) => {
+            const matches = category === 'all' || card.dataset.category === category;
+            card.style.display = matches ? 'block' : 'none';
         });
 
-        // Update grid
-        items.forEach((item) => {
-            if (category === 'all' || item.dataset.category === category) {
-                item.style.display = 'block';
-                setTimeout(() => item.classList.remove('opacity-20', 'scale-95'), 50);
+        featuredCards.forEach((card) => {
+            const matches = category === 'all' || card.dataset.category === category;
+            card.style.display = matches ? 'block' : 'none';
+        });
+
+        visibleCards = cards.filter((card) => card.style.display !== 'none');
+        setButtonState(category);
+        syncVisibleVideos();
+    }
+
+    function syncVisibleVideos() {
+        autoVideos.forEach((video) => {
+            const card = video.closest('.gallery-card, .featured-card');
+            if (!card || card.style.display === 'none') {
+                video.pause();
+                return;
+            }
+
+            const bounds = card.getBoundingClientRect();
+            const inView = bounds.bottom > 80 && bounds.top < window.innerHeight - 80;
+
+            if (inView) {
+                video.play().catch(() => {});
             } else {
-                item.style.display = 'none';
+                video.pause();
             }
         });
     }
 
-    buttons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const filter = btn.dataset.filter;
-            filterGallery(filter);
-            
-            const newUrl = new URL(window.location.href);
-            newUrl.searchParams.set('category', filter);
-            window.history.pushState({}, '', newUrl);
+    function setupMediaFallbacks() {
+        document.querySelectorAll('.gallery-video, .featured-video').forEach((video) => {
+            video.addEventListener('error', () => {
+                const errorState = video.closest('.gallery-card, .featured-card')?.querySelector('.media-error');
+                video.classList.add('hidden');
+                if (errorState) {
+                    errorState.classList.remove('hidden');
+                    errorState.classList.add('flex');
+                }
+            });
+
+            video.addEventListener('loadeddata', () => {
+                video.play().catch(() => {});
+            });
         });
-    });
 
-    filterGallery(initialCategory);
-    // Setup error handlers after initial filter
-    setupMediaErrorHandlers();
-
-    // Enhanced Lightbox with Navigation
-    const lightbox = document.getElementById('lightbox');
-    const lightboxContent = document.getElementById('lightbox-content');
-    const closeBtn = document.getElementById('lightbox-close');
-    const prevBtn = document.getElementById('lightbox-prev');
-    const nextBtn = document.getElementById('lightbox-next');
-    const counterCurrent = document.getElementById('counter-current');
-    const counterTotal = document.getElementById('counter-total');
-    
-    let currentIndex = 0;
-    let visibleItems = [];
-
-    function updateVisibleItems() {
-        visibleItems = Array.from(items).filter(item => item.style.display !== 'none');
-        counterTotal.textContent = visibleItems.length;
+        document.querySelectorAll('.gallery-image').forEach((image) => {
+            image.addEventListener('error', () => {
+                const errorState = image.closest('.gallery-card')?.querySelector('.media-error');
+                image.classList.add('hidden');
+                if (errorState) {
+                    errorState.classList.remove('hidden');
+                    errorState.classList.add('flex');
+                }
+            });
+        });
     }
 
-    function loadMedia(index) {
-        if (!visibleItems[index]) return;
-        
+    function encodedPath(src) {
+        return src
+            .split('/')
+            .map((segment, index) => (index === 0 ? segment : encodeURIComponent(segment)))
+            .join('/');
+    }
+
+    function updateLightbox(index) {
+        const asset = visibleCards[index];
+        if (!asset) {
+            return;
+        }
+
         currentIndex = index;
-        const item = visibleItems[index];
-        const src = item.dataset.src;
-        const type = item.dataset.type;
-        
-        // Clear previous content and pause any videos
-        const oldVideo = lightboxContent.querySelector('video');
-        if (oldVideo) {
-            oldVideo.pause();
-            oldVideo.src = '';
-            oldVideo.load();
-        }
         lightboxContent.innerHTML = '';
-        
-        // URL encode the path to handle spaces
-        const encodedSrc = src.split('/').map(part => encodeURIComponent(part)).join('/');
-        
+
+        const type = asset.dataset.type;
+        const src = asset.dataset.src;
+        const title = asset.dataset.title || '';
+        const category = asset.dataset.category || 'branding';
+        const collection = asset.dataset.collection || '';
+        const alt = asset.dataset.alt || title;
+
         if (type === 'video') {
-            // Create loading indicator
-            const loadingDiv = document.createElement('div');
-            loadingDiv.className = 'absolute inset-0 flex items-center justify-center bg-black/80 z-10';
-            loadingDiv.innerHTML = `
-                <div class="flex flex-col items-center gap-4">
-                    <div class="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
-                    <p class="text-white/60 font-body text-sm uppercase tracking-wider">Loading Video...</p>
-                </div>
-            `;
-            lightboxContent.appendChild(loadingDiv);
-            
+            const frame = document.createElement('div');
+            frame.className = 'flex h-full w-full items-center justify-center';
+
             const video = document.createElement('video');
-            video.src = encodedSrc;
+            video.src = encodedPath(src);
             video.controls = true;
-            video.className = "max-w-full max-h-full object-contain rounded-xl shadow-2xl";
-            
-            // Optimize video attributes for better performance
-            video.preload = 'auto';
+            video.autoplay = true;
             video.playsInline = true;
-            
-            // Remove loading indicator once video can play
-            video.addEventListener('canplay', () => {
-                loadingDiv.remove();
-                video.play().catch(e => console.warn('Autoplay prevented:', e));
-            }, { once: true });
-            
-            // Handle video errors
-            video.addEventListener('error', (e) => {
-                console.error('Video loading error:', e);
-                loadingDiv.innerHTML = `
-                    <div class="flex flex-col items-center gap-4">
-                        <svg class="w-16 h-16 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <p class="text-white/60 font-body text-sm uppercase tracking-wider">Failed to Load Video</p>
-                    </div>
-                `;
-            });
-            
-            // Show buffering indicator
-            video.addEventListener('waiting', () => {
-                if (!loadingDiv.parentElement) {
-                    loadingDiv.querySelector('p').textContent = 'Buffering...';
-                    lightboxContent.appendChild(loadingDiv);
-                }
-            });
-            
-            video.addEventListener('playing', () => {
-                if (loadingDiv.parentElement) {
-                    loadingDiv.remove();
-                }
-            });
-            
-            lightboxContent.appendChild(video);
+            video.className = 'max-h-[78vh] w-full rounded-[1.4rem] object-contain';
+
+            frame.appendChild(video);
+            lightboxContent.appendChild(frame);
         } else {
-            const img = document.createElement('img');
-            img.src = encodedSrc;
-            img.className = "max-w-full max-h-full object-contain rounded-xl shadow-2xl";
-            
-            // Add loading state for images too
-            img.style.opacity = '0';
-            img.addEventListener('load', () => {
-                img.style.transition = 'opacity 0.3s';
-                img.style.opacity = '1';
-            });
-            
-            lightboxContent.appendChild(img);
+            const image = document.createElement('img');
+            image.src = encodedPath(src);
+            image.alt = alt;
+            image.className = 'max-h-[78vh] w-full rounded-[1.4rem] object-contain';
+            lightboxContent.appendChild(image);
         }
-        
-        counterCurrent.textContent = index + 1;
-        
-        // Show/hide navigation buttons
-        prevBtn.style.opacity = index === 0 ? '0.3' : '1';
-        prevBtn.style.pointerEvents = index === 0 ? 'none' : 'auto';
-        nextBtn.style.opacity = index === visibleItems.length - 1 ? '0.3' : '1';
-        nextBtn.style.pointerEvents = index === visibleItems.length - 1 ? 'none' : 'auto';
+
+        lightboxTitle.textContent = title;
+        lightboxCategory.textContent = categoryMeta[category].label;
+        lightboxCollection.textContent = collection;
+        lightboxPosition.textContent = `${index + 1} / ${visibleCards.length}`;
+
+        lightboxPrev.style.opacity = index === 0 ? '0.35' : '1';
+        lightboxPrev.style.pointerEvents = index === 0 ? 'none' : 'auto';
+        lightboxNext.style.opacity = index === visibleCards.length - 1 ? '0.35' : '1';
+        lightboxNext.style.pointerEvents = index === visibleCards.length - 1 ? 'none' : 'auto';
     }
 
     function openLightbox(index) {
-        updateVisibleItems();
-        loadMedia(index);
+        updateLightbox(index);
         lightbox.classList.remove('hidden');
-        lightbox.classList.add('flex');
-        setTimeout(() => lightbox.classList.remove('opacity-0'), 10);
+        requestAnimationFrame(() => {
+            lightbox.classList.remove('opacity-0');
+        });
+        document.body.style.overflow = 'hidden';
     }
 
     function closeLightbox() {
         lightbox.classList.add('opacity-0');
-        setTimeout(() => {
+        window.setTimeout(() => {
             lightbox.classList.add('hidden');
-            lightbox.classList.remove('flex');
             lightboxContent.innerHTML = '';
-        }, 300);
+        }, 250);
+        document.body.style.overflow = '';
     }
 
-    function navigate(direction) {
-        const newIndex = currentIndex + direction;
-        if (newIndex >= 0 && newIndex < visibleItems.length) {
-            loadMedia(newIndex);
+    function moveLightbox(direction) {
+        const nextIndex = currentIndex + direction;
+        if (nextIndex < 0 || nextIndex >= visibleCards.length) {
+            return;
         }
+
+        updateLightbox(nextIndex);
     }
 
-    // Click handlers
-    items.forEach((item, index) => {
-        item.addEventListener('click', () => {
-            updateVisibleItems();
-            const visibleIndex = visibleItems.indexOf(item);
-            if (visibleIndex !== -1) {
-                openLightbox(visibleIndex);
+    const params = new URLSearchParams(window.location.search);
+    const initialCategory = params.get('category') || 'all';
+
+    buttons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const filter = button.dataset.filter || 'all';
+            filterGallery(filter);
+
+            const url = new URL(window.location.href);
+            url.searchParams.set('category', filter);
+            window.history.replaceState({}, '', url);
+        });
+    });
+
+    cards.forEach((card) => {
+        card.addEventListener('click', () => {
+            const index = visibleCards.indexOf(card);
+            if (index !== -1) {
+                openLightbox(index);
             }
         });
     });
 
-    closeBtn.addEventListener('click', closeLightbox);
-    prevBtn.addEventListener('click', () => navigate(-1));
-    nextBtn.addEventListener('click', () => navigate(1));
-    
-    lightbox.addEventListener('click', (e) => {
-        if (e.target === lightbox) closeLightbox();
-    });
-    
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-        if (!lightbox.classList.contains('hidden')) {
-            if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowLeft') navigate(-1);
-            if (e.key === 'ArrowRight') navigate(1);
+    lightboxClose?.addEventListener('click', closeLightbox);
+    lightboxPrev?.addEventListener('click', () => moveLightbox(-1));
+    lightboxNext?.addEventListener('click', () => moveLightbox(1));
+
+    lightbox?.addEventListener('click', (event) => {
+        if (event.target === lightbox) {
+            closeLightbox();
         }
     });
 
+    document.addEventListener('keydown', (event) => {
+        if (lightbox?.classList.contains('hidden')) {
+            return;
+        }
+
+        if (event.key === 'Escape') {
+            closeLightbox();
+        } else if (event.key === 'ArrowLeft') {
+            moveLightbox(-1);
+        } else if (event.key === 'ArrowRight') {
+            moveLightbox(1);
+        }
+    });
+
+    window.addEventListener('scroll', syncVisibleVideos, { passive: true });
+    window.addEventListener('resize', syncVisibleVideos);
+
+    setupMediaFallbacks();
+    filterGallery(initialCategory);
 </script>
 
 <style>
-    .filter-btn.active {
-        background-color: white;
-        color: black;
+    .gallery-shell {
+        background-image:
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+            linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+        background-position: center;
+        background-size: 80px 80px;
     }
-    
-    /* Lightbox animations */
-    #lightbox-content > * {
-        animation: zoomIn 0.3s ease-out;
+
+    .gallery-card,
+    .featured-card {
+        animation: rise-in 0.7s ease both;
     }
-    
-    @keyframes zoomIn {
+
+    @keyframes rise-in {
         from {
             opacity: 0;
-            transform: scale(0.9);
+            transform: translateY(24px);
         }
         to {
             opacity: 1;
-            transform: scale(1);
+            transform: translateY(0);
         }
     }
 </style>

@@ -1,8 +1,11 @@
 ---
+import { toEncodedAssetPath } from '../data/portfolioAssets';
+
 interface MediaItem {
     type: 'image' | 'video';
     src: string;
     alt?: string;
+    title?: string;
 }
 
 interface Props {
@@ -12,16 +15,16 @@ interface Props {
 }
 
 const { items, interval = 10000, class: className } = Astro.props;
+const carouselId = `carousel-${Math.random().toString(36).slice(2, 10)}`;
 ---
 
-<div class={`visual-carousel relative w-full h-full overflow-hidden ${className}`}>
+<div class={`visual-carousel relative w-full h-full overflow-hidden ${className}`} data-carousel-id={carouselId}>
     {items.map((item, index) => (
         <div class={`carousel-item absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} data-index={index} data-src={item.src}>
             {item.type === 'video' ? (
                 <div class="w-full h-full relative">
                     <video 
-                        src={item.src} 
-                        autoplay 
+                        src={toEncodedAssetPath(item.src)}
                         loop 
                         muted 
                         playsinline 
@@ -39,8 +42,9 @@ const { items, interval = 10000, class: className } = Astro.props;
             ) : (
                 <div class="w-full h-full relative">
                     <img 
-                        src={item.src} 
+                        src={toEncodedAssetPath(item.src)} 
                         alt={item.alt || ""} 
+                        loading={index === 0 ? 'eager' : 'lazy'}
                         class="image-element w-full h-full object-cover"
                     />
                     <!-- Fallback UI for image errors -->
@@ -66,14 +70,19 @@ const { items, interval = 10000, class: className } = Astro.props;
     </div>
 </div>
 
-<script define:vars={{ interval, count: items.length }}>
-    const carouselItems = document.querySelectorAll('.carousel-item');
-    const indicators = document.querySelectorAll('.indicator .progress');
+<script define:vars={{ interval, count: items.length, carouselId }}>
+    const root = document.querySelector(`[data-carousel-id="${carouselId}"]`);
+
+    if (!root) {
+        throw new Error(`Carousel root not found: ${carouselId}`);
+    }
+
+    const carouselItems = root.querySelectorAll('.carousel-item');
+    const indicators = root.querySelectorAll('.indicator .progress');
     let currentIndex = 0;
-    let timer;
-    let startTime;
-    let paused = false;
     let brokenItems = new Set(); // Track which items have errors
+    let rotationTimer;
+    let observer;
     
     // Setup error handlers for all videos and images
     function setupErrorHandlers() {
@@ -196,33 +205,69 @@ const { items, interval = 10000, class: className } = Astro.props;
             bar.style.transform = 'translateX(0)';
         });
         
-        startTime = Date.now();
     }
-    
-    // Handle visibility changes to pause/resume videos
-    function handleVisibilityChange() {
-        if (document.hidden) {
-            paused = true;
-            const currentVideo = carouselItems[currentIndex]?.querySelector('.video-element');
-            if (currentVideo) {
-                currentVideo.pause();
-            }
-        } else {
-            paused = false;
-            const currentVideo = carouselItems[currentIndex]?.querySelector('.video-element');
-            if (currentVideo && !brokenItems.has(currentIndex)) {
-                currentVideo.play().catch(e => console.warn('Resume play failed:', e));
-            }
+
+    function playCurrentVideo() {
+        const currentVideo = carouselItems[currentIndex]?.querySelector('.video-element');
+        if (currentVideo && !brokenItems.has(currentIndex)) {
+            currentVideo.play().catch((e) => console.warn('Video play failed:', e));
         }
     }
-    
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    function pauseAllVideos() {
+        carouselItems.forEach((item) => {
+            const video = item.querySelector('.video-element');
+            if (video) {
+                video.pause();
+            }
+        });
+    }
+
+    function startRotation() {
+        if (rotationTimer || count <= 1) {
+            return;
+        }
+
+        rotationTimer = window.setInterval(nextSlide, interval);
+    }
+
+    function stopRotation() {
+        if (rotationTimer) {
+            window.clearInterval(rotationTimer);
+            rotationTimer = undefined;
+        }
+    }
 
     // Init
     setupErrorHandlers();
     startProgress(0);
-    
-    // Start carousel rotation
-    setInterval(nextSlide, interval);
+    playCurrentVideo();
+
+    observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                playCurrentVideo();
+                startRotation();
+            } else {
+                stopRotation();
+                pauseAllVideos();
+            }
+        });
+    }, { threshold: 0.35 });
+
+    observer.observe(root);
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            pauseAllVideos();
+            stopRotation();
+            return;
+        }
+
+        if (root.getBoundingClientRect().top < window.innerHeight && root.getBoundingClientRect().bottom > 0) {
+            playCurrentVideo();
+            startRotation();
+        }
+    });
 
 </script>
