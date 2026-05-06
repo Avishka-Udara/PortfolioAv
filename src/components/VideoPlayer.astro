@@ -23,7 +23,7 @@ const encodedSrc = toEncodedAssetPath(src);
     muted={muted}
     playsinline
     controls={controls}
-    preload="metadata"
+    preload={autoplay ? 'metadata' : 'none'}
     class="video-player w-full h-full object-cover"
     loading="lazy"
   ></video>

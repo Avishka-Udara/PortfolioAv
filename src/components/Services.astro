@@ -1,0 +1,88 @@
+---
+const services = [
+  {
+    title: 'Brand Identity Systems',
+    label: 'Branding',
+    description: 'Logos, visual systems, product looks, and brand directions that help businesses feel established and memorable.'
+  },
+  {
+    title: 'Social & Campaign Design',
+    label: 'Campaigns',
+    description: 'Promotional posts, launch visuals, healthcare campaigns, and ad creatives designed to communicate fast and clearly.'
+  },
+  {
+    title: '2D Motion Graphics',
+    label: 'Motion',
+    description: 'Animated promos, explainers, logo stings, and looping visual stories that make digital products easier to understand.'
+  },
+  {
+    title: '3D Product & Spatial Visuals',
+    label: '3D',
+    description: 'Rendered product scenes, dimensional mockups, and cinematic presentation visuals for launches, showcases, and promos.'
+  },
+  {
+    title: 'Visual Support Retainers',
+    label: 'Partnerships',
+    description: 'Ongoing design support for brands and organizations that need a reliable creative partner over months and years.'
+  },
+  {
+    title: 'Cross-Industry Communication Design',
+    label: 'Strategy',
+    description: 'Visual problem-solving for fintech, healthcare, NGOs, exports, food brands, and emerging digital businesses.'
+  }
+];
+---
+
+<section id="services" class="relative overflow-hidden border-t border-white/8 bg-black px-4 py-24 md:px-8 md:py-32">
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute left-[-8%] top-12 h-80 w-80 rounded-full bg-red-500/10 blur-[130px]"></div>
+    <div class="absolute right-[-8%] bottom-0 h-72 w-72 rounded-full bg-cyan-500/10 blur-[130px]"></div>
+  </div>
+
+  <div class="relative mx-auto max-w-7xl">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
+      <div class="lg:sticky lg:top-28">
+        <p class="text-xs uppercase tracking-[0.38em] text-white/40">Services</p>
+        <h2 class="mt-5 font-display text-5xl leading-[0.92] text-white md:text-7xl">
+          A clearer offer for brands that need both style and communication power.
+        </h2>
+        <p class="mt-6 max-w-xl text-base leading-7 text-white/68 md:text-lg">
+          I do more than make visuals look good. I help brands explain, launch, promote, and stay visually consistent across ongoing digital work.
+        </p>
+      </div>
+
+      <div class="grid gap-5 md:grid-cols-2">
+        {services.map((service, index) => (
+          <article class={`service-card rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:border-white/20 ${index % 2 === 0 ? 'md:translate-y-8' : ''}`}>
+            <p class="text-[0.68rem] uppercase tracking-[0.3em] text-red-400/80">{service.label}</p>
+            <h3 class="mt-4 font-display text-3xl leading-tight text-white">{service.title}</h3>
+            <p class="mt-4 text-sm leading-7 text-white/65">{service.description}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .service-card {
+    animation: service-rise 0.65s ease both;
+  }
+
+  @keyframes service-rise {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .service-card {
+      transform: none !important;
+    }
+  }
+</style>

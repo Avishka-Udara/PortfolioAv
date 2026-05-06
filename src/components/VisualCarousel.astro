@@ -28,7 +28,7 @@ const carouselId = `carousel-${Math.random().toString(36).slice(2, 10)}`;
                         loop 
                         muted 
                         playsinline 
-                        preload="metadata"
+                        preload={index === 0 ? 'metadata' : 'none'}
                         class="video-element w-full h-full object-cover"
                     ></video>
                     <!-- Fallback UI for video errors -->
@@ -45,6 +45,7 @@ const carouselId = `carousel-${Math.random().toString(36).slice(2, 10)}`;
                         src={toEncodedAssetPath(item.src)} 
                         alt={item.alt || ""} 
                         loading={index === 0 ? 'eager' : 'lazy'}
+                        decoding="async"
                         class="image-element w-full h-full object-cover"
                     />
                     <!-- Fallback UI for image errors -->

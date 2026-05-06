@@ -11,6 +11,8 @@ import VisualEffects from '../components/VisualEffects.astro';
 import Marquee from '../components/Marquee.astro';
 import VisualCarousel from '../components/VisualCarousel.astro';
 import Partnerships from '../components/Partnerships.astro';
+import Services from '../components/Services.astro';
+import TrustSignals from '../components/TrustSignals.astro';
 import { homepageShowcases, categoryMeta } from '../data/portfolioAssets';
 
 const logos = homepageShowcases.logos.map(({ src, alt, title }) => ({
@@ -21,6 +23,7 @@ const logos = homepageShowcases.logos.map(({ src, alt, title }) => ({
 const brandingAssets = homepageShowcases.branding;
 const motionAssets = homepageShowcases.motion2d;
 const spatialAssets = homepageShowcases.spatial3d;
+const logoCount = logos.length;
 const partnershipLogos = [
   {
     name: 'BTI Group',
@@ -145,6 +148,8 @@ const partnershipLogos = [
         </div>
 
         <Partnerships partners={partnershipLogos} />
+        <Services />
+        <TrustSignals partnerCount={partnershipLogos.length} logoCount={logoCount} />
 
         <Marquee items={logos} speed={32} />
         <Skills />

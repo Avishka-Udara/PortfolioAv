@@ -1,0 +1,40 @@
+---
+interface Props {
+  partnerCount: number;
+  logoCount: number;
+}
+
+const { partnerCount, logoCount } = Astro.props;
+---
+
+<section id="proof" class="relative border-t border-white/8 bg-[#050505] px-4 py-20 md:px-8 md:py-24">
+  <div class="mx-auto max-w-7xl">
+    <div class="mb-10">
+      <p class="text-xs uppercase tracking-[0.36em] text-white/40">Trust Signals</p>
+      <h2 class="mt-4 font-display text-4xl text-white md:text-6xl">Long-term consistency, not one-off visuals.</h2>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <article class="rounded-[1.8rem] border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl">
+        <p class="text-xs uppercase tracking-[0.28em] text-white/38">Experience</p>
+        <p class="mt-4 font-display text-5xl text-white">9+</p>
+        <p class="mt-2 text-sm leading-6 text-white/62">Years building visual work across branding, campaigns, and motion design.</p>
+      </article>
+      <article class="rounded-[1.8rem] border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl">
+        <p class="text-xs uppercase tracking-[0.28em] text-white/38">Long-Term Partners</p>
+        <p class="mt-4 font-display text-5xl text-white">{partnerCount}</p>
+        <p class="mt-2 text-sm leading-6 text-white/62">Companies and NGOs represented in the ongoing partnerships section.</p>
+      </article>
+      <article class="rounded-[1.8rem] border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl">
+        <p class="text-xs uppercase tracking-[0.28em] text-white/38">Brand Marks</p>
+        <p class="mt-4 font-display text-5xl text-white">{logoCount}+</p>
+        <p class="mt-2 text-sm leading-6 text-white/62">Logo and identity assets already showcased inside the portfolio library.</p>
+      </article>
+      <article class="rounded-[1.8rem] border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl">
+        <p class="text-xs uppercase tracking-[0.28em] text-white/38">Core Strength</p>
+        <p class="mt-4 font-display text-3xl text-white">Brand, Motion, 3D</p>
+        <p class="mt-2 text-sm leading-6 text-white/62">A blended visual practice that helps brands stay consistent across stills, animation, and presentation.</p>
+      </article>
+    </div>
+  </div>
+</section>

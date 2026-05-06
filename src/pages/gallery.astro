@@ -100,7 +100,7 @@ const categoryCounts = Object.fromEntries(
                                         muted
                                         loop
                                         playsinline
-                                        preload="metadata"
+                                        preload="none"
                                         data-autoplay-video
                                     ></video>
                                 ) : (
@@ -109,6 +109,7 @@ const categoryCounts = Object.fromEntries(
                                         alt={asset.alt}
                                         class="h-full w-full object-cover"
                                         loading="lazy"
+                                        decoding="async"
                                     />
                                 )}
                                 <div class={`absolute inset-0 bg-gradient-to-t ${categoryMeta[asset.category].accent} opacity-20 mix-blend-screen`}></div>
@@ -159,7 +160,7 @@ const categoryCounts = Object.fromEntries(
                                         muted
                                         loop
                                         playsinline
-                                        preload="metadata"
+                                        preload="none"
                                         data-autoplay-video
                                     ></video>
                                 ) : (
@@ -167,6 +168,7 @@ const categoryCounts = Object.fromEntries(
                                         src={toEncodedAssetPath(asset.src)}
                                         alt={asset.alt}
                                         loading="lazy"
+                                        decoding="async"
                                         class={`gallery-image h-full w-full ${asset.category === 'logos' ? 'object-contain p-8' : 'object-cover'} transition-transform duration-700 group-hover:scale-105`}
                                     />
                                 )}
@@ -369,6 +371,7 @@ const categoryCounts = Object.fromEntries(
             video.controls = true;
             video.autoplay = true;
             video.playsInline = true;
+            video.preload = 'metadata';
             video.className = 'max-h-[78vh] w-full rounded-[1.4rem] object-contain';
 
             frame.appendChild(video);
@@ -485,6 +488,8 @@ const categoryCounts = Object.fromEntries(
     .gallery-card,
     .featured-card {
         animation: rise-in 0.7s ease both;
+        content-visibility: auto;
+        contain-intrinsic-size: 420px;
     }
 
     @keyframes rise-in {
