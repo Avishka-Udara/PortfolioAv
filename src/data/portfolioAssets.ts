@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export type PortfolioCategory = 'branding' | 'logos' | '2d' | '3d';
+export type PortfolioCategory = 'branding' | 'logos' | '2d' | '3d' | 'designing';
 export type PortfolioMediaType = 'image' | 'video';
 
 export interface PortfolioAsset {
@@ -48,6 +48,12 @@ export const categoryMeta: Record<
     eyebrow: 'Depth',
     description: 'Rendered objects, spatial experiments, and cinematic product scenes.',
     accent: 'from-emerald-300 via-teal-400 to-cyan-500'
+  },
+  designing: {
+    label: 'Design & Composition',
+    eyebrow: 'Visuals',
+    description: 'UI layouts, image compositions, photo manipulations, and structural designs.',
+    accent: 'from-purple-400 via-indigo-500 to-blue-500'
   }
 };
 
@@ -57,7 +63,8 @@ const CATEGORY_ROOTS: Record<PortfolioCategory, string[]> = {
   branding: ['Graphics'],
   logos: ['Logos_png', 'companies_and_NGO_i_works_with'],
   '2d': ['2D'],
-  '3d': ['3D']
+  '3d': ['3D'],
+  designing: ['Designings']
 };
 
 const IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif', '.svg']);
@@ -155,7 +162,8 @@ export const homepageShowcases = {
   branding: portfolioAssets.filter((asset) => asset.category === 'branding').slice(0, 6),
   logos: portfolioAssets.filter((asset) => asset.category === 'logos'),
   motion2d: portfolioAssets.filter((asset) => asset.category === '2d').slice(0, 6),
-  spatial3d: portfolioAssets.filter((asset) => asset.category === '3d').slice(0, 6)
+  spatial3d: portfolioAssets.filter((asset) => asset.category === '3d').slice(0, 6),
+  designing: portfolioAssets.filter((asset) => asset.category === 'designing').slice(0, 6)
 };
 
 export function toEncodedAssetPath(src: string) {

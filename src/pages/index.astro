@@ -22,6 +22,7 @@ const logos = homepageShowcases.logos.map(({ src, alt, title }) => ({
 
 const brandingAssets = homepageShowcases.branding;
 const motionAssets = homepageShowcases.motion2d;
+const designingAssets = homepageShowcases.designing;
 const spatialAssets = homepageShowcases.spatial3d;
 const logoCount = logos.length;
 const partnershipLogos = [
@@ -129,6 +130,25 @@ const partnershipLogos = [
 
             <Act 
                 actNumber="ACT III"
+                title="DESIGN & COMPOSITION"
+                subtitle="UI layouts, image compositions, and structural designs"
+                description={categoryMeta['designing'].description}
+                align="left"
+                bgColor="from-purple-900/30 via-indigo-900/20 to-black"
+            >
+                <div slot="visual" class="w-full h-full">
+                     <VisualCarousel items={designingAssets} interval={7000} />
+                </div>
+                
+                <div class="mt-8">
+                    <a href="/gallery?category=designing" class="inline-block px-8 py-4 border border-white/30 rounded-full text-white font-body text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors duration-300">
+                        Explore Design
+                    </a>
+                </div>
+            </Act>
+
+            <Act 
+                actNumber="ACT IV"
                 title="SPATIAL DEPTH"
                 subtitle="Rendered objects, scenes, and dimensional motion"
                 description={categoryMeta['3d'].description}
