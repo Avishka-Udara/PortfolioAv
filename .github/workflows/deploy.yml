@@ -33,9 +33,13 @@ jobs:
           
       - name: Install dependencies
         run: npm ci
-        
-      - name: Build with Astro
+
+      # Set SITE_URL to your canonical domain so the build emits sitemap.xml.
+      # Without it, robots.txt is written but the sitemap is skipped on purpose.
+      - name: Build
         run: npm run build
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

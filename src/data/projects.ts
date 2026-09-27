@@ -596,6 +596,23 @@ export const projects: Project[] = [
 
 /* ------------------------------------------------------------- helpers -- */
 
+/** Newest first — the order the work grid and the home selection use, so the
+ *  first thing a client sees is the most recent thing shipped. Projects in the
+ *  same year keep their curated order. */
+export const byRecency = projects
+  .map((p, i) => ({ p, i }))
+  .sort((a, b) => Number(b.p.year) - Number(a.p.year) || a.i - b.i)
+  .map((x) => x.p);
+
+/** Featured work, newest first. */
+export const featuredByRecency = byRecency.filter((p) => p.featured);
+
+/** Disciplines that actually have work in them. Empty categories stay out of
+ *  the filter bar and the footer so nothing links to a dead end. */
+export const categoriesWithWork = categories.filter((c) =>
+  projects.some((p) => p.category === c)
+);
+
 export const bySlug = (slug: string) => projects.find((p) => p.slug === slug);
 
 export const featured = projects.filter((p) => p.featured);

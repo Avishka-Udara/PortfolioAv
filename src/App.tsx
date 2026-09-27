@@ -47,10 +47,6 @@ export default function App() {
     };
   }, []);
 
-  useEffect(() => {
-    document.title = "Avishka Udara — Visual Design, Motion & 3D";
-  }, []);
-
   return (
     <>
       {intro && ready && <Preloader onDone={() => setIntro(false)} />}

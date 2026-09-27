@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { motion, useScroll, useTransform } from "motion/react";
-import { bySlug, categoryMeta, projects, resolveMedia } from "../data/projects";
+import { bySlug, byRecency, categoryMeta, resolveMedia } from "../data/projects";
 import { Lightbox, type LightboxItem } from "../components/Lightbox";
 import { Btn, Arrow, Eyebrow } from "../components/ui";
 import { Reveal } from "../components/Reveal";
@@ -9,6 +9,8 @@ import { site } from "../data/site";
 import { EASE } from "../lib/motion";
 import { mmss } from "../lib/utils";
 import { isVideo, isModel } from "../lib/media";
+import { useSeo } from "../hooks/useSeo";
+import { workJsonLd } from "../lib/seo";
 
 export default function ProjectPage() {
   const { slug = "" } = useParams();
@@ -20,14 +22,37 @@ export default function ProjectPage() {
   const imgY = useTransform(scrollYProgress, [0, 1], [0, 110]);
   const imgScale = useTransform(scrollYProgress, [0, 1], [1, 1.14]);
 
+  const media = project ? resolveMedia(project) : [];
+  const cover = media[0];
+
+  // metadata (and the hooks above) must run before the redirect guard so the
+  // hook order is identical on every render
+  useSeo(
+    project
+      ? {
+          title: project.title,
+          description: project.summary,
+          path: `/work/${project.slug}`,
+          image: cover?.kind === "video" ? cover.poster : cover?.kind === "image" ? cover.src : cover?.poster,
+          type: "article",
+          jsonLd: workJsonLd({
+            title: project.title,
+            description: project.summary,
+            path: `/work/${project.slug}`,
+            image: cover?.kind === "image" ? cover.src : cover?.poster,
+            client: project.client,
+            year: project.year,
+          }),
+        }
+      : { noindex: true }
+  );
+
   if (!project) return <Navigate to="/work" replace />;
 
-  const media = resolveMedia(project);
-  const cover = media[0];
   const meta = categoryMeta[project.category];
 
-  const idx = projects.findIndex((p) => p.slug === project.slug);
-  const next = projects[(idx + 1) % projects.length];
+  const idx = byRecency.findIndex((p) => p.slug === project.slug);
+  const next = byRecency[(idx + 1) % byRecency.length];
 
   const lbItems: LightboxItem[] = media.map((m) => ({
     item: m,

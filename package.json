@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && node scripts/sitemap.mjs && vite build",
     "preview": "vite preview",
     "lint": "tsc -b --noEmit",
     "media": "node scripts/process-media.mjs",
     "media:check": "node scripts/validate-media.mjs",
+    "seo": "node scripts/sitemap.mjs",
     "shots": "node scripts/shots.mjs"
   },
   "dependencies": {

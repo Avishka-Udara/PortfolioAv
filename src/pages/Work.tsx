@@ -6,17 +6,26 @@ import { SetTile } from "../components/SetTile";
 import { Lightbox, type LightboxItem } from "../components/Lightbox";
 import { SectionHead, Btn, Arrow } from "../components/ui";
 import { Reveal } from "../components/Reveal";
-import { categories, categoryMeta, projects, archiveGroups, resolveMedia, type CategoryId } from "../data/projects";
+import {
+  categoriesWithWork,
+  categoryMeta,
+  projects,
+  byRecency,
+  archiveGroups,
+  resolveMedia,
+  type CategoryId,
+} from "../data/projects";
 import { mediaIndex, type MediaItem } from "../lib/media";
 import { site } from "../data/site";
 import { EASE } from "../lib/motion";
 import { cn, mmss } from "../lib/utils";
+import { useSeo } from "../hooks/useSeo";
 
 type Filter = CategoryId | "all";
 
 const FILTERS: { id: Filter; label: string }[] = [
   { id: "all", label: "All work" },
-  ...categories.map((c) => ({ id: c as Filter, label: categoryMeta[c].label })),
+  ...categoriesWithWork.map((c) => ({ id: c as Filter, label: categoryMeta[c].label })),
 ];
 
 /** reverse lookup: optimised MediaItem -> its source key */
@@ -40,9 +49,18 @@ export default function Work() {
   }, [filter]);
 
   const visible = useMemo(
-    () => (filter === "all" ? projects : projects.filter((p) => p.category === filter)),
+    () => (filter === "all" ? byRecency : byRecency.filter((p) => p.category === filter)),
     [filter]
   );
+
+  useSeo({
+    title: filter === "all" ? "Work" : categoryMeta[filter as CategoryId].label,
+    description:
+      filter === "all"
+        ? "The full portfolio of Avishka Udara — brand identity, campaigns, 2D/3D animation, CGI, video and product design, filtered by discipline."
+        : `${categoryMeta[filter as CategoryId].label} — ${categoryMeta[filter as CategoryId].blurb}`,
+    path: filter === "all" ? "/work" : `/work?f=${filter}`,
+  });
 
   /** the lightbox is scoped to one project's media at a time, so next/prev
    *  walks that project's images, videos and 3D models as one sequence */

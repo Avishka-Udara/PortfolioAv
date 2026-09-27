@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { capabilities, site } from "../data/site";
+import { categoriesWithWork } from "../data/projects";
 import { Arrow, Magnetic } from "./ui";
 import { EASE } from "../lib/motion";
 
@@ -89,11 +90,13 @@ export function Footer() {
             </FooterCol>
 
             <FooterCol title="Capabilities">
-              {capabilities.map((c) => (
-                <FooterLink key={c.id} to={`/work?f=${c.id}`}>
-                  {c.name}
-                </FooterLink>
-              ))}
+              {capabilities
+                .filter((c) => categoriesWithWork.includes(c.id))
+                .map((c) => (
+                  <FooterLink key={c.id} to={`/work?f=${c.id}`}>
+                    {c.name}
+                  </FooterLink>
+                ))}
             </FooterCol>
           </div>
         </div>

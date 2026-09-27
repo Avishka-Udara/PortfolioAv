@@ -28,14 +28,14 @@ pnpm-debug.log*
 
 # Optional: Ignore large media files during development
 # Uncomment below if you want to exclude specific folders temporarily
-public/2D/
-public/3D/
-public/Graphics/
+raw/2D/
+raw/3D/
+raw/Graphics/
 
 # Keep these files committed:
-# - public/ folder (source media)
-# - src/ folder (your code)
-# - astro.config.mjs
+# - public/media/   (optimised, web-ready assets — the only media the build ships)
+# - raw/            (source media for the optimisation pipeline)
+# - src/            (your code)
 # - package.json
 
 

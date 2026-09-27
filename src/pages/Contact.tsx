@@ -5,6 +5,7 @@ import { Reveal } from "../components/Reveal";
 import { capabilities, site } from "../data/site";
 import { EASE } from "../lib/motion";
 import { cn } from "../lib/utils";
+import { useSeo } from "../hooks/useSeo";
 
 const budgets = ["< $500", "$500 – $2k", "$2k – $5k", "$5k +", "Not sure yet"];
 const needs = [
@@ -20,30 +21,84 @@ const needs = [
 export default function Contact() {
   const [need, setNeed] = useState<string[]>([]);
   const [budget, setBudget] = useState("");
-  const [sent, setSent] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [timeline, setTimeline] = useState("");
+  const [details, setDetails] = useState("");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  useSeo({
+    title: "Contact",
+    description:
+      "Start a project with Avishka Udara — brand identity, motion, 3D or video. Open for freelance, remote work and ongoing partnerships. Replies via email or Telegram.",
+    path: "/contact",
+  });
 
   const toggle = (n: string) =>
     setNeed((cur) => (cur.includes(n) ? cur.filter((x) => x !== n) : [...cur, n]));
 
-  const mailto = () => {
-    const subject = `Project enquiry — ${need.join(", ") || "New project"}`;
-    const body = [
-      "Hi Avishka,",
-      "",
-      "I'd like to talk about a project.",
-      "",
-      need.length ? `What I need: ${need.join(", ")}` : "",
-      budget ? `Budget: ${budget}` : "",
-      "",
-      "Timeline:",
-      "Budget:",
-      "About the project:",
-      "",
-      "Thanks!",
-    ]
-      .filter(Boolean)
-      .join("\n");
-    return `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  /** Set in .env (VITE_FORMSPREE_ID) to post to a real form instead of mailto. */
+  const formId = import.meta.env.VITE_FORMSPREE_ID;
+  const delivered = status === "sent";
+
+  const subject = `Project enquiry — ${need.join(", ") || "New project"}`;
+
+  const bodyLines = [
+    "Hi Avishka,",
+    "",
+    "I'd like to talk about a project.",
+    "",
+    name && `Name: ${name}`,
+    email && `Email: ${email}`,
+    need.length ? `What I need: ${need.join(", ")}` : "",
+    budget ? `Budget: ${budget}` : "",
+    timeline ? `Timeline: ${timeline}` : "",
+    "",
+    "About the project:",
+    details,
+    "",
+    "Thanks!",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const mailto = () =>
+    `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines)}`;
+
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (status === "sending") return;
+    setStatus("sending");
+
+    // No form backend configured: hand the composed brief to the mail client.
+    if (!formId) {
+      window.location.href = mailto();
+      setStatus("sent");
+      return;
+    }
+
+    try {
+      const res = await fetch(`https://formspree.io/f/${formId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          name,
+          email: email || "not given",
+          _subject: subject,
+          needs: need.join(", ") || "—",
+          budget: budget || "Not sure yet",
+          timeline: timeline || "—",
+          message: details,
+        }),
+      });
+      if (res.ok) {
+        setStatus("sent");
+        return;
+      }
+    } catch {
+      /* network failure — offer the mailto fallback below */
+    }
+    setStatus("error");
   };
 
   return (
@@ -91,11 +146,15 @@ export default function Contact() {
 
           {/* ------------------------------------------------------ planner */}
           <Reveal delay={0.12} className="lg:col-span-7">
-            <div className="rounded-2xl border border-line bg-ink-2 p-6 sm:p-8">
+            <form
+              onSubmit={submit}
+              noValidate
+              className="rounded-2xl border border-line bg-ink-2 p-6 sm:p-8"
+            >
               <p className="mono text-accent">Project planner</p>
               <p className="mt-3 text-sm leading-relaxed text-muted">
-                Tick what you need and set a rough budget. This just builds a tidy email for
-                you — no forms, no signup, no newsletter.
+                Tick what you need, set a rough budget and sketch the brief. Send it straight
+                through{formId ? " — I reply within a day or two" : ", or let it open a tidy email in your mail app"}.
               </p>
 
               {/* needs */}
@@ -107,6 +166,7 @@ export default function Contact() {
                     return (
                       <button
                         key={n}
+                        type="button"
                         onClick={() => toggle(n)}
                         data-cursor="hover"
                         className={cn(
@@ -139,6 +199,7 @@ export default function Contact() {
                     return (
                       <button
                         key={b}
+                        type="button"
                         onClick={() => setBudget(on ? "" : b)}
                         data-cursor="hover"
                         className={cn(
@@ -160,32 +221,102 @@ export default function Contact() {
                 </div>
               </fieldset>
 
+              {/* contact details + brief */}
+              <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                <label className="flex flex-col gap-2">
+                  <span className="mono text-dim">Your name</span>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Jane Perera"
+                    autoComplete="name"
+                    disabled={delivered}
+                    className="rounded-xl border border-line bg-ink/60 px-4 py-3 text-sm text-fg outline-none transition-colors duration-300 placeholder:text-dim focus:border-accent/60 disabled:opacity-50"
+                  />
+                </label>
+                <label className="flex flex-col gap-2">
+                  <span className="mono text-dim">Email</span>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="jane@company.com"
+                    autoComplete="email"
+                    disabled={delivered}
+                    className="rounded-xl border border-line bg-ink/60 px-4 py-3 text-sm text-fg outline-none transition-colors duration-300 placeholder:text-dim focus:border-accent/60 disabled:opacity-50"
+                  />
+                </label>
+              </div>
+
+              <label className="mt-4 flex flex-col gap-2">
+                <span className="mono text-dim">Timeline</span>
+                <input
+                  type="text"
+                  value={timeline}
+                  onChange={(e) => setTimeline(e.target.value)}
+                  placeholder="Yesterday / this quarter / flexible"
+                  disabled={delivered}
+                  className="rounded-xl border border-line bg-ink/60 px-4 py-3 text-sm text-fg outline-none transition-colors duration-300 placeholder:text-dim focus:border-accent/60 disabled:opacity-50"
+                />
+              </label>
+
+              <label className="mt-4 flex flex-col gap-2">
+                <span className="mono text-dim">About the project</span>
+                <textarea
+                  rows={4}
+                  value={details}
+                  onChange={(e) => setDetails(e.target.value)}
+                  placeholder="What you're making, who it's for, anything you've already tried…"
+                  disabled={delivered}
+                  className="resize-y rounded-xl border border-line bg-ink/60 px-4 py-3 text-sm leading-relaxed text-fg outline-none transition-colors duration-300 placeholder:text-dim focus:border-accent/60 disabled:opacity-50"
+                />
+              </label>
+
               {/* summary + cta */}
               <div className="mt-8 flex flex-col gap-4 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
-                <p className="mono text-dim">
-                  {need.length || budget ? (
-                    <>
-                      {need.length} selected{need.length === 1 ? "" : ""}
-                      {budget && ` · ${budget}`}
-                    </>
-                  ) : (
-                    "Nothing selected — just say hi anyway."
-                  )}
-                </p>
-                <a
-                  href={mailto()}
-                  onClick={() => setSent(true)}
+                {delivered ? (
+                  <p className="mono text-accent">
+                    {formId ? "Brief sent — talk soon." : "Opening your mail app…"}
+                  </p>
+                ) : status === "error" ? (
+                  <p className="mono text-hot">
+                    Send failed —{" "}
+                    <a href={mailto()} className="link-sweep underline">
+                      email me directly
+                    </a>
+                  </p>
+                ) : (
+                  <p className="mono text-dim">
+                    {need.length || budget ? (
+                      <>
+                        {need.length} selected{budget && ` · ${budget}`}
+                      </>
+                    ) : (
+                      "Nothing selected — just say hi anyway."
+                    )}
+                  </p>
+                )}
+                <button
+                  type="submit"
+                  disabled={status === "sending" || delivered}
                   data-cursor="hover"
-                  className="mono group relative inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-full bg-fg px-6 py-3.5 text-ink"
+                  className="mono group relative inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-full bg-fg px-6 py-3.5 text-ink transition-colors duration-300 hover:bg-accent disabled:opacity-60"
                 >
                   <span className="absolute inset-0 origin-bottom scale-y-0 bg-accent transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-y-100" />
                   <span className="relative z-10">
-                    {sent ? "Opening your mail app" : `Email ${site.name.split(" ")[0]}`}
+                    {delivered
+                      ? "Sent"
+                      : status === "sending"
+                        ? "Sending…"
+                        : formId
+                          ? "Send brief"
+                          : `Email ${site.name.split(" ")[0]}`}
                   </span>
                   <Arrow className="relative z-10" />
-                </a>
+                </button>
               </div>
-            </div>
+            </form>
           </Reveal>
         </div>
       </section>

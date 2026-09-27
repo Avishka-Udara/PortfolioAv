@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
 import { Btn, Arrow } from "../components/ui";
 import { site } from "../data/site";
+import { useSeo } from "../hooks/useSeo";
 
 export default function NotFound() {
+  useSeo({ title: "Not found", noindex: true });
+
   return (
     <section className="container-x grid min-h-[100svh] place-items-center py-32 text-center">
       <div>

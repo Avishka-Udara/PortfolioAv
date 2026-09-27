@@ -6,12 +6,14 @@ import { Marquee, SectionHead, Btn, Arrow, CountUp } from "../components/ui";
 import { ProjectCard } from "../components/ProjectCard";
 import { Lightbox, type LightboxItem } from "../components/Lightbox";
 import { useState } from "react";
-import { categories, categoryMeta, featured, resolveMedia } from "../data/projects";
+import { categoriesWithWork, categoryMeta, featuredByRecency, resolveMedia } from "../data/projects";
 import { capabilities, process, site, stats } from "../data/site";
 import { mediaIndex } from "../lib/media";
 import { EASE } from "../lib/motion";
 import { cn } from "../lib/utils";
 import { scrollToId } from "../hooks/useSmoothScroll";
+import { useSeo } from "../hooks/useSeo";
+import { personJsonLd } from "../lib/seo";
 
 /* ------------------------------------------------------------------ hero */
 
@@ -212,7 +214,7 @@ function LogoTile({ k }: { k: string }) {
 /* -------------------------------------------------------- selected work */
 
 function SelectedWork() {
-  const picks = featured.slice(0, 6);
+  const picks = featuredByRecency.slice(0, 6);
   const [lb, setLb] = useState<number | null>(null);
 
   const lbItems: LightboxItem[] = picks.map((p) => ({
@@ -241,7 +243,7 @@ function SelectedWork() {
           transition={{ duration: 0.7, ease: EASE }}
         >
           <Btn to="/work" variant="ghost">
-            All {featured.length > 6 ? "work" : "projects"} <Arrow />
+            All work <Arrow />
           </Btn>
         </motion.div>
       </div>
@@ -391,7 +393,7 @@ function CategoryStrip() {
   return (
     <section className="container-x pb-6 sm:pb-10">
       <div className="flex flex-wrap gap-2.5">
-        {categories.map((c, i) => (
+        {categoriesWithWork.map((c, i) => (
           <motion.div
             key={c}
             initial={{ opacity: 0, scale: 0.94 }}
@@ -417,6 +419,14 @@ function CategoryStrip() {
 /* ------------------------------------------------------------------ page */
 
 export default function Home() {
+  useSeo({
+    title: undefined,
+    description:
+      "Avishka Udara — visual designer, motion artist and 3D generalist from Sri Lanka. Brand identity, social campaigns, motion promos, CGI and long-term creative support. Open for freelance.",
+    path: "/",
+    jsonLd: personJsonLd(),
+  });
+
   return (
     <>
       <Hero />

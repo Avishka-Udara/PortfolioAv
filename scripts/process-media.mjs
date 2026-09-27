@@ -1,10 +1,10 @@
 /**
  * Media pipeline
  * --------------
- * Source  : public/<original messy files>
+ * Source  : raw/<original messy files>   (kept out of public/ so the build
+ *           never ships the unoptimised originals — ~380MB saved per deploy)
  * Output  : public/media/...   (web-ready, optimised)
  *           src/generated/media.json  (original path -> optimised variants)
- *
  * - video  -> H.264 faststart mp4, capped at 1280px, + auto-picked poster frame
  * - gif    -> mp4 + poster
  * - image  -> webp (full) + webp (card/thumb) + jpg poster
@@ -22,8 +22,9 @@ const execFileAsync = promisify(execFile);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
-const SRC = path.join(ROOT, "public");
-const OUT = path.join(ROOT, "public", "media");
+const SRC = path.join(ROOT, "raw");
+const PUBLIC = path.join(ROOT, "public");
+const OUT = path.join(PUBLIC, "media");
 const INDEX_OUT = path.join(ROOT, "src", "generated", "media.json");
 
 // resolve in this order: a shared temp install (fast repeat runs), then this
@@ -194,8 +195,8 @@ async function doVideo(rel, info, tmp) {
   const base = slug(path.basename(rel, path.extname(rel)));
   const outRel = path.join("media", dir, `${base}.mp4`);
   const posterRel = path.join("media", dir, `${base}-poster.jpg`);
-  const outAbs = path.join(SRC, outRel);
-  const posterAbs = path.join(SRC, posterRel);
+  const outAbs = path.join(PUBLIC, outRel);
+  const posterAbs = path.join(PUBLIC, posterRel);
   await fs.mkdir(path.dirname(outAbs), { recursive: true });
 
   const srcAbs = path.join(SRC, rel);
@@ -281,8 +282,8 @@ async function doImage(rel, info) {
   const base = slug(path.basename(rel, path.extname(rel)));
   const fullRel = path.join("media", dir, `${base}.webp`);
   const cardRel = path.join("media", dir, `${base}-card.webp`);
-  const fullAbs = path.join(SRC, fullRel);
-  const cardAbs = path.join(SRC, cardRel);
+  const fullAbs = path.join(PUBLIC, fullRel);
+  const cardAbs = path.join(PUBLIC, cardRel);
   await fs.mkdir(path.dirname(fullAbs), { recursive: true });
 
   const srcAbs = path.join(SRC, rel);
@@ -358,7 +359,7 @@ async function doImage(rel, info) {
 async function doModel(rel) {
   const dir = path.dirname(rel);
   const outRel = path.join("media", dir, path.basename(rel));
-  const outAbs = path.join(SRC, outRel);
+  const outAbs = path.join(PUBLIC, outRel);
   await fs.mkdir(path.dirname(outAbs), { recursive: true });
 
   const srcAbs = path.join(SRC, rel);
@@ -384,8 +385,8 @@ async function doModel(rel) {
   const posterBase = slug(path.basename(posterName, path.extname(posterName)));
   const posterRel = path.join("media", dir, `${posterBase}.webp`);
   const cardRel = path.join("media", dir, `${posterBase}-card.webp`);
-  const posterAbs = path.join(SRC, posterRel);
-  const cardAbs = path.join(SRC, cardRel);
+  const posterAbs = path.join(PUBLIC, posterRel);
+  const cardAbs = path.join(PUBLIC, cardRel);
 
   try {
     await sharp(posterSrc, SHARP_OPTS).resize({ width: FULL_W, height: FULL_W, fit: "inside", withoutEnlargement: true }).webp({ quality: 82 }).toFile(posterAbs);
@@ -497,7 +498,7 @@ await fs.writeFile(INDEX_OUT, JSON.stringify(sorted, null, 2));
 
 const inBytes = jobs.reduce((s, f) => s + f.size, 0);
 const outBytes = Object.values(sorted).reduce(
-  (s, r) => s + (exists(path.join(SRC, r.src.slice(1))) ? fsSync.statSync(path.join(SRC, r.src.slice(1))).size : 0),
+  (s, r) => s + (exists(path.join(PUBLIC, r.src.slice(1))) ? fsSync.statSync(path.join(PUBLIC, r.src.slice(1))).size : 0),
   0
 );
 console.log(`\n  done in ${((Date.now() - t0) / 1000 / 60).toFixed(1)} min`);

@@ -4,6 +4,7 @@ import { Reveal, RevealGroup, revealItem } from "../components/Reveal";
 import { capabilities, clients, process, site, stats } from "../data/site";
 import { EASE } from "../lib/motion";
 import { Link } from "react-router-dom";
+import { useSeo } from "../hooks/useSeo";
 
 const timeline = [
   {
@@ -29,6 +30,14 @@ const timeline = [
 ];
 
 export default function About() {
+  useSeo({
+    title: "About",
+    description:
+      "Nine years of multidisciplinary design — Avishka Udara works across brand identity, campaigns, motion, 3D and post-production as a long-term creative partner for founders and marketing teams.",
+    path: "/about",
+    type: "profile",
+  });
+
   return (
     <>
       <header className="container-x pt-32 pb-12 sm:pt-40 sm:pb-16">

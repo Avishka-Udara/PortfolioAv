@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# only the optimised web-ready assets live under /media
+Disallow: /media/*.mp4$
+Disallow: /media/*.obj$
+
+# Sitemap: set SITE_URL to enable

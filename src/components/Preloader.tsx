@@ -67,7 +67,7 @@ export function Preloader({ onDone }: { onDone: () => void }) {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.25, duration: 0.6 }}
             >
-              Portfolio · 2026
+              Portfolio · {new Date().getFullYear()}
             </motion.p>
             <motion.p
               className="mono text-accent tabular-nums"
