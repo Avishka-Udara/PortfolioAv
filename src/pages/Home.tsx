@@ -163,24 +163,49 @@ function ClientMarquee() {
   );
 
   return (
-    <section className="border-y border-line bg-ink-2/50 py-6">
+    <section className="border-y border-line bg-ink-2/50 py-7 sm:py-9">
+      <div className="container-x mb-6">
+        <p className="mono text-center text-dim">Trusted by brands, hospitals &amp; NGOs across Sri Lanka and beyond</p>
+      </div>
       <Marquee speed={52} className="py-1">
         {logoKeys.map((k) => (
-          <div
-            key={k}
-            className="flex h-12 w-40 shrink-0 items-center justify-center px-6 grayscale transition-all duration-500 hover:grayscale-0 sm:h-14 sm:w-48"
-          >
-            <img
-              src={mediaIndex[k].kind === "image" ? mediaIndex[k].card : ""}
-              alt={k.split("/").pop()?.replace(/\.\w+$/, "").replace(/[_-]/g, " ") ?? ""}
-              loading="lazy"
-              className="max-h-full w-full object-contain opacity-80 transition-all duration-500 group-hover:opacity-100 group-hover:grayscale-0"
-            />
-          </div>
+          <LogoTile key={k} k={k} />
         ))}
         <span className="mx-6 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
       </Marquee>
     </section>
+  );
+}
+
+function LogoTile({ k }: { k: string }) {
+  const item = mediaIndex[k];
+  const label = k.split("/").pop()?.replace(/\.\w+$/, "").replace(/[_-]/g, " ") ?? "";
+
+  return (
+    <div className="group/logo relative flex h-16 w-44 shrink-0 items-center justify-center px-5 sm:h-20 sm:w-52">
+      {/* halo: invisible until the pointer arrives, then blooms behind the mark */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 scale-50 rounded-full bg-accent/12 opacity-0 blur-xl transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/logo:scale-110 group-hover/logo:opacity-100"
+      />
+      <div className="relative h-full w-full overflow-hidden">
+        <img
+          src={item.kind === "image" ? item.card : ""}
+          alt={label}
+          loading="lazy"
+          className="h-full w-full object-contain opacity-55 transition-all duration-[0.9s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/logo:scale-[1.18] group-hover/logo:opacity-100"
+        />
+        {/* wipe: a soft light sweeps across the mark on hover */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-[1.1s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/logo:translate-x-full"
+        />
+      </div>
+      {/* caption that rises with the tile */}
+      <span className="mono pointer-events-none absolute -bottom-1 left-1/2 -translate-x-1/2 translate-y-1 text-[0.65rem] uppercase tracking-[0.14em] text-accent opacity-0 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/logo:translate-y-0 group-hover/logo:opacity-100">
+        {label}
+      </span>
+    </div>
   );
 }
 

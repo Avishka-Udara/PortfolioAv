@@ -251,6 +251,35 @@
     "duration": 30,
     "ratio": 1
   },
+  "3D/BBA_coin/closeup0032.png": {
+    "kind": "image",
+    "src": "/media/3D/BBA_coin/closeup0032.webp",
+    "card": "/media/3D/BBA_coin/closeup0032-card.webp",
+    "width": 1920,
+    "height": 1080,
+    "ratio": 1.7778,
+    "orientation": "landscape",
+    "hasAlpha": true
+  },
+  "3D/BBA_coin/closeup1.png": {
+    "kind": "image",
+    "src": "/media/3D/BBA_coin/closeup1.webp",
+    "card": "/media/3D/BBA_coin/closeup1-card.webp",
+    "width": 1920,
+    "height": 1080,
+    "ratio": 1.7778,
+    "orientation": "landscape",
+    "hasAlpha": true
+  },
+  "3D/BBA_coin/coin.obj": {
+    "kind": "model",
+    "src": "/media/3D/BBA_coin/coin.obj",
+    "poster": "/media/3D/BBA_coin/closeup0032.webp",
+    "card": "/media/3D/BBA_coin/closeup0032-card.webp",
+    "width": 1920,
+    "height": 1080,
+    "ratio": 1.7778
+  },
   "3D/BTI NFT MARKETPLACE0001-0240.mp4": {
     "kind": "video",
     "src": "/media/3D/bti-nft-marketplace0001-0240.mp4",
@@ -310,6 +339,15 @@
     "orientation": "landscape",
     "hasAlpha": true
   },
+  "3D/chair_model_images/chair.obj": {
+    "kind": "model",
+    "src": "/media/3D/chair_model_images/chair.obj",
+    "poster": "/media/3D/chair_model_images/chair-02.webp",
+    "card": "/media/3D/chair_model_images/chair-02-card.webp",
+    "width": 1920,
+    "height": 1080,
+    "ratio": 1.7778
+  },
   "3D/coin/02.png": {
     "kind": "image",
     "src": "/media/3D/coin/02.webp",
@@ -340,25 +378,14 @@
     "orientation": "landscape",
     "hasAlpha": true
   },
-  "3D/coin/closeup0032.png": {
-    "kind": "image",
-    "src": "/media/3D/coin/closeup0032.webp",
-    "card": "/media/3D/coin/closeup0032-card.webp",
+  "3D/coin/e coin 2.2.obj": {
+    "kind": "model",
+    "src": "/media/3D/coin/e coin 2.2.obj",
+    "poster": "/media/3D/coin/02.webp",
+    "card": "/media/3D/coin/02-card.webp",
     "width": 1920,
     "height": 1080,
-    "ratio": 1.7778,
-    "orientation": "landscape",
-    "hasAlpha": true
-  },
-  "3D/coin/closeup1.png": {
-    "kind": "image",
-    "src": "/media/3D/coin/closeup1.webp",
-    "card": "/media/3D/coin/closeup1-card.webp",
-    "width": 1920,
-    "height": 1080,
-    "ratio": 1.7778,
-    "orientation": "landscape",
-    "hasAlpha": true
+    "ratio": 1.7778
   },
   "3D/logo_animation.mp4": {
     "kind": "video",
@@ -418,6 +445,15 @@
     "ratio": 1.7778,
     "orientation": "landscape",
     "hasAlpha": false
+  },
+  "3D/table_model_images/table.obj": {
+    "kind": "model",
+    "src": "/media/3D/table_model_images/table.obj",
+    "poster": "/media/3D/table_model_images/table-v2-1.webp",
+    "card": "/media/3D/table_model_images/table-v2-1-card.webp",
+    "width": 1920,
+    "height": 1080,
+    "ratio": 1.7778
   },
   "companies_and_NGO_i_works_with/BTI GROUP-02.png": {
     "kind": "image",
@@ -496,16 +532,6 @@
     "width": 2000,
     "height": 598,
     "ratio": 3.3445,
-    "orientation": "landscape",
-    "hasAlpha": true
-  },
-  "companies_and_NGO_i_works_with/speralabs logo.png": {
-    "kind": "image",
-    "src": "/media/companies_and_NGO_i_works_with/speralabs-logo.webp",
-    "card": "/media/companies_and_NGO_i_works_with/speralabs-logo-card.webp",
-    "width": 2000,
-    "height": 1187,
-    "ratio": 1.6849,
     "orientation": "landscape",
     "hasAlpha": true
   },

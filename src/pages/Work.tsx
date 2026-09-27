@@ -2,11 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { ProjectCard } from "../components/ProjectCard";
+import { SetTile } from "../components/SetTile";
 import { Lightbox, type LightboxItem } from "../components/Lightbox";
 import { SectionHead, Btn, Arrow } from "../components/ui";
 import { Reveal } from "../components/Reveal";
 import { categories, categoryMeta, projects, archiveGroups, resolveMedia, type CategoryId } from "../data/projects";
-import { mediaIndex } from "../lib/media";
+import { mediaIndex, type MediaItem } from "../lib/media";
 import { site } from "../data/site";
 import { EASE } from "../lib/motion";
 import { cn, mmss } from "../lib/utils";
@@ -17,6 +18,11 @@ const FILTERS: { id: Filter; label: string }[] = [
   { id: "all", label: "All work" },
   ...categories.map((c) => ({ id: c as Filter, label: categoryMeta[c].label })),
 ];
+
+/** reverse lookup: optimised MediaItem -> its source key */
+const srcToKey = new Map<string, string>();
+for (const [k, v] of Object.entries(mediaIndex)) srcToKey.set(v.src, k);
+const findKey = (m: MediaItem) => srcToKey.get(m.src) ?? "";
 
 export default function Work() {
   const [params, setParams] = useSearchParams();
@@ -38,11 +44,29 @@ export default function Work() {
     [filter]
   );
 
-  const lbItems: LightboxItem[] = visible.map((p) => ({
-    item: resolveMedia(p)[0],
-    title: p.title,
-    meta: `${p.client} · ${p.year}`,
-  }));
+  /** the lightbox is scoped to one project's media at a time, so next/prev
+   *  walks that project's images, videos and 3D models as one sequence */
+  const [lbProject, setLbProject] = useState<(typeof visible)[number] | null>(null);
+
+  const lbWindow: LightboxItem[] = lbProject
+    ? resolveMedia(lbProject).map((m) => ({
+        item: m,
+        title: lbProject.title,
+        meta: `${lbProject.client} · ${lbProject.year}`,
+      }))
+    : [];
+
+  /** index of the first asset of a set's media list within a project */
+  const setOffset = (p: (typeof visible)[number], keys: string[]) => {
+    const media = resolveMedia(p);
+    const first = keys.map((k) => mediaIndex[k]).filter(Boolean)[0];
+    return first ? media.indexOf(first) : 0;
+  };
+
+  const openProject = (p: (typeof visible)[number], at = 0) => {
+    setLbProject(p);
+    setLb(at);
+  };
 
   const count = (f: Filter) =>
     f === "all" ? projects.length : projects.filter((p) => p.category === f).length;
@@ -101,11 +125,34 @@ export default function Work() {
 
       {/* ------------------------------------------------------------ grid */}
       <section className="container-x py-12 sm:py-16">
-        <motion.div layout className="grid grid-cols-1 gap-x-5 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-6">
+        <div className="mb-8 flex items-center justify-between gap-4 border-b border-line pb-4">
+          <p className="mono text-dim">
+            <motion.span key={filter} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: EASE }} className="inline-block text-fg">
+              {visible.length}
+            </motion.span>{" "}
+            {visible.length === 1 ? "project" : "projects"}
+            {filter !== "all" && <span className="text-dim"> · {categoryMeta[filter as CategoryId].label}</span>}
+          </p>
+          <p className="mono hidden text-dim sm:block">Hover a tile to preview</p>
+        </div>
+
+        <motion.div layout className="grid grid-cols-1 gap-x-5 gap-y-14 sm:grid-cols-2 sm:gap-y-16 lg:grid-cols-3 lg:gap-x-6">
           <AnimatePresence mode="popLayout">
-            {visible.map((p, i) => (
-              <ProjectCard key={p.slug} project={p} index={i} onOpen={() => setLb(i)} />
-            ))}
+            {visible.map((p, i) =>
+              p.sets && p.sets.length ? (
+                p.sets.map((s, si) => (
+                  <SetTile
+                    key={`${p.slug}-set-${si}`}
+                    label={s.label}
+                    items={resolveMedia(p).filter((m) => s.media.includes(findKey(m)))}
+                    index={i + si}
+                    onOpen={() => openProject(p, setOffset(p, s.media))}
+                  />
+                ))
+              ) : (
+                <ProjectCard key={p.slug} project={p} index={i} onOpen={() => openProject(p)} />
+              )
+            )}
           </AnimatePresence>
         </motion.div>
 
@@ -114,7 +161,15 @@ export default function Work() {
         )}
       </section>
 
-      <Lightbox items={lbItems} index={lb} onClose={() => setLb(null)} onIndex={setLb} />
+      <Lightbox
+        items={lbWindow}
+        index={lb}
+        onClose={() => {
+          setLb(null);
+          setLbProject(null);
+        }}
+        onIndex={setLb}
+      />
 
       {/* ---------------------------------------------------------- archive */}
       <Archive />

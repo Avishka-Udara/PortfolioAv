@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Nav, ScrollProgress } from "./components/Nav";
 import { Footer } from "./components/Footer";
 import { Cursor } from "./components/Cursor";
+import { FloatingDrive } from "./components/FloatingDrive";
 import { Preloader } from "./components/Preloader";
 import { useScrollReset, useSmoothScroll } from "./hooks/useSmoothScroll";
 import { EASE } from "./lib/motion";
@@ -75,6 +76,7 @@ export default function App() {
         </main>
 
         <Footer />
+        <FloatingDrive />
       </div>
     </>
   );

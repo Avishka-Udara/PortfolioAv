@@ -17,6 +17,12 @@ export type Project = {
   featured?: boolean;
   /** bigger = leads the grid on larger screens */
   size?: "lg" | "md" | "sm";
+  /**
+   * Optional sub-sets inside the project — design families that belong
+   * together (a screenshot series, a model + its renders). Rendered as one
+   * stacked tile instead of spread flat across the grid.
+   */
+  sets?: { label: string; media: string[] }[];
 };
 
 export const categoryMeta: Record<
@@ -102,6 +108,19 @@ export const projects: Project[] = [
       "Designings/PlayStore Screenshot Design/d120-05.jpg",
       "Designings/PlayStore Screenshot Design/d120-06.jpg",
     ],
+    sets: [
+      {
+        label: "Play Store screenshot series",
+        media: [
+          "Designings/PlayStore Screenshot Design/d120-01.jpg",
+          "Designings/PlayStore Screenshot Design/d120-02.jpg",
+          "Designings/PlayStore Screenshot Design/d120-03.jpg",
+          "Designings/PlayStore Screenshot Design/d120-04.jpg",
+          "Designings/PlayStore Screenshot Design/d120-05.jpg",
+          "Designings/PlayStore Screenshot Design/d120-06.jpg",
+        ],
+      },
+    ],
     tools: ["Figma", "Photoshop", "After Effects"],
     featured: true,
     size: "md",
@@ -124,6 +143,26 @@ export const projects: Project[] = [
       "Graphics/crypto 2.jpg",
       "Graphics/crypto 3.jpg",
       "Graphics/crypto 7 - 3D mix.jpg",
+    ],
+    sets: [
+      {
+        label: "Campaign poster series",
+        media: [
+          "Graphics/crypto 1.jpg",
+          "Graphics/crypto 2.jpg",
+          "Graphics/crypto 3.jpg",
+          "Graphics/crypto 4.jpg",
+          "Graphics/crypto 5.jpg",
+        ],
+      },
+      {
+        label: "3D render set",
+        media: [
+          "Graphics/crypto 6 - 3D.jpg",
+          "Graphics/crypto 7 - 3D mix.jpg",
+          "Graphics/crypto BoX 3D.jpg",
+        ],
+      },
     ],
     tools: ["Photoshop", "Blender", "After Effects"],
     featured: true,
@@ -394,19 +433,21 @@ export const projects: Project[] = [
   /* ---------------------------------------------------------------- 3D */
   {
     slug: "token-coin-cgi",
-    title: "Token & Coin CGI",
-    client: "Crypto / fintech",
+    title: "Coin & Token CGI",
+    client: "BBachain / fintech",
     year: "2024",
     category: "3d",
     disciplines: ["3D modeling", "Product visualization", "Abstract CGI"],
     summary:
-      "Hard-surface coin modelling and a macro render of a token spilling across a dark surface — the kind of hero image a fintech launch actually needs.",
+      "Hard-surface coin modelling with full interactive models — open the viewer and orbit the mesh to see the bevels, micro-text and edge lettering from every angle the brief cared about.",
     media: [
       "3D/coin/02.png",
-      "3D/coin/closeup0032.png",
+      "3D/BBA_coin/closeup0032.png",
       "3D/coin/03.png",
       "3D/coin/04.png",
-      "3D/coin/closeup1.png",
+      "3D/BBA_coin/closeup1.png",
+      "3D/coin/e coin 2.2.obj",
+      "3D/BBA_coin/coin.obj",
       "3D/an33.mp4",
     ],
     tools: ["Blender", "Substance Painter", "DaVinci Resolve"],
@@ -421,7 +462,7 @@ export const projects: Project[] = [
     category: "3d",
     disciplines: ["3D modeling", "Environment design", "Product visualization"],
     summary:
-      "A modelled chair and table set lit and rendered as a coherent catalogue — same HDRI, same camera language, so the range reads as one range.",
+      "A modelled chair and table set with both source meshes available to orbit — lit and rendered as a coherent catalogue, same HDRI and camera language so the range reads as one range.",
     media: [
       "3D/chair_model_images/chair 02.png",
       "3D/table_model_images/table v2-1.png",
@@ -433,6 +474,8 @@ export const projects: Project[] = [
       "3D/table_model_images/table v2-4.png",
       "3D/chair_model_images/chair 06.png",
       "3D/table_model_images/table v2-5.png",
+      "3D/chair_model_images/chair.obj",
+      "3D/table_model_images/table.obj",
     ],
     tools: ["Blender", "Cycles", "Photoshop"],
     featured: true,
@@ -446,7 +489,7 @@ export const projects: Project[] = [
     category: "3d",
     disciplines: ["Abstract CGI", "3D animation", "Environment design"],
     summary:
-      "Loops, light studies and procedural forms made to test a renderer, not to sell anything — where most of my 3D instincts came from.",
+      "Loops, light studies and procedural forms made to test a renderer rather than sell anything — the playground where most of my 3D instincts were earned.",
     media: [
       "3D/an350001-0165.mp4",
       "3D/an67.mp4",

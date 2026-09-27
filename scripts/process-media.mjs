@@ -26,17 +26,47 @@ const SRC = path.join(ROOT, "public");
 const OUT = path.join(ROOT, "public", "media");
 const INDEX_OUT = path.join(ROOT, "src", "generated", "media.json");
 
-const FFMPEG = process.env.FFMPEG_PATH || path.join(process.env.TEMP, "mediatools", "node_modules", "ffmpeg-static", "ffmpeg.exe");
+// resolve in this order: a shared temp install (fast repeat runs), then this
+// project's own devDependency, then the plain specifier
+let FFMPEG = process.env.FFMPEG_PATH || "";
+if (!FFMPEG) {
+  for (const candidate of [
+    path.join(process.env.TEMP, "mediatools", "node_modules", "ffmpeg-static", "ffmpeg.exe"),
+    path.join(ROOT, "node_modules", "ffmpeg-static", "ffmpeg.exe"),
+  ]) {
+    if (fsSync.existsSync(candidate)) {
+      FFMPEG = candidate;
+      break;
+    }
+  }
+}
+if (!FFMPEG) {
+  try {
+    FFMPEG = require.resolve("ffmpeg-static");
+  } catch {
+    FFMPEG = "ffmpeg";
+  }
+}
 const SHARP_OPTS = { limitInputPixels: 0, sequentialRead: true };
 let sharp;
-try {
-  sharp = require(path.join(process.env.TEMP, "mediatools", "node_modules", "sharp"));
-} catch {
-  sharp = null;
+// resolve in this order: a shared temp install (fast repeat runs), then this
+// project's own devDependency, then the plain specifier
+for (const candidate of [
+  () => require(path.join(process.env.TEMP, "mediatools", "node_modules", "sharp")),
+  () => require(path.join(ROOT, "node_modules", "sharp")),
+  () => require("sharp"),
+]) {
+  try {
+    sharp = candidate();
+    break;
+  } catch {
+    /* try the next */
+  }
 }
 
 const VIDEO_EXT = new Set([".mp4", ".mov", ".webm", ".mkv", ".m4v"]);
 const IMAGE_EXT = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif"]);
+const MODEL_EXT = new Set([".obj", ".glb", ".gltf"]);
 
 const CARD_W = 900; // grid thumbnail width
 const FULL_W = 2000; // detail-page width
@@ -317,6 +347,77 @@ async function doImage(rel, info) {
   };
 }
 
+/* ---------------------------------------------------------------- models */
+
+/**
+ * 3D meshes are served verbatim (no transcode worth doing for portfolio OBJs),
+ * with the nearest rendered image in the same folder volunteered as the poster
+ * so grids and the lightbox scrubber have something to show before anyone
+ * actually opens the viewer.
+ */
+async function doModel(rel) {
+  const dir = path.dirname(rel);
+  const outRel = path.join("media", dir, path.basename(rel));
+  const outAbs = path.join(SRC, outRel);
+  await fs.mkdir(path.dirname(outAbs), { recursive: true });
+
+  const srcAbs = path.join(SRC, rel);
+  try {
+    await fs.copyFile(srcAbs, outAbs);
+  } catch (e) {
+    console.log(`   x skip ${rel}: ${e.message}`);
+    return null;
+  }
+
+  // poster: first supported image sibling, preferring one that looks like a
+  // hero render (closeup / render / numbered shot) over incidental extras
+  const siblings = (await fs.readdir(path.dirname(srcAbs), { withFileTypes: true }))
+    .filter((e) => e.isFile() && IMAGE_EXT.has(path.extname(e.name).toLowerCase()))
+    .map((e) => e.name)
+    .sort((a, b) => rankModelPoster(a) - rankModelPoster(b));
+  if (!siblings.length) {
+    console.log(`   x skip ${rel}: no poster candidate beside it`);
+    return null;
+  }
+  const posterName = siblings[0];
+  const posterSrc = path.join(path.dirname(srcAbs), posterName);
+  const posterBase = slug(path.basename(posterName, path.extname(posterName)));
+  const posterRel = path.join("media", dir, `${posterBase}.webp`);
+  const cardRel = path.join("media", dir, `${posterBase}-card.webp`);
+  const posterAbs = path.join(SRC, posterRel);
+  const cardAbs = path.join(SRC, cardRel);
+
+  try {
+    await sharp(posterSrc, SHARP_OPTS).resize({ width: FULL_W, height: FULL_W, fit: "inside", withoutEnlargement: true }).webp({ quality: 82 }).toFile(posterAbs);
+    await sharp(posterSrc, SHARP_OPTS).resize({ width: CARD_W, withoutEnlargement: true }).webp({ quality: 78 }).toFile(cardAbs);
+  } catch (e) {
+    console.log(`   x skip ${rel}: poster failed — ${e.message}`);
+    return null;
+  }
+
+  const meta = await sharp(posterSrc, SHARP_OPTS).metadata();
+  const ratio = meta.width && meta.height ? +(meta.width / meta.height).toFixed(4) : 1;
+
+  console.log(`   ok ${rel}\n      -> ${outRel}  (model, poster ${posterName})`);
+  return {
+    kind: "model",
+    src: "/" + outRel.split(path.sep).join("/"),
+    poster: "/" + posterRel.split(path.sep).join("/"),
+    card: "/" + cardRel.split(path.sep).join("/"),
+    width: meta.width,
+    height: meta.height,
+    ratio,
+  };
+}
+
+function rankModelPoster(name) {
+  const n = name.toLowerCase();
+  if (/closeup|render|hero|beauty|turn/.test(n)) return 0;
+  if (/^\d/.test(n)) return 1;
+  if (/front|side|persp|view/.test(n)) return 2;
+  return 5;
+}
+
 /* ----------------------------------------------------------------- main */
 
 const argv = process.argv.slice(2);
@@ -353,20 +454,32 @@ const jobs = files
 
 const videos = jobs.filter((f) => VIDEO_EXT.has(f.ext) || f.ext === ".gif");
 const images = jobs.filter((f) => IMAGE_EXT.has(f.ext));
-console.log(`\n  ${videos.length} video/gif  ·  ${images.length} image  ·  ${(jobs.reduce((s, f) => s + f.size, 0) / 1048576).toFixed(0)}MB total\n`);
+const models = jobs.filter((f) => MODEL_EXT.has(f.ext));
+console.log(
+  `\n  ${videos.length} video/gif  ·  ${images.length} image  ·  ${models.length} model  ·  ${(jobs.reduce((s, f) => s + f.size, 0) / 1048576).toFixed(0)}MB total\n`
+);
 
 if (CLEAN || FORCE.size) await fs.rm(OUT, { recursive: true, force: true });
 await fs.mkdir(OUT, { recursive: true });
 
 const index = {};
-const queue = [...videos.map((f) => ({ ...f, kind: "video" })), ...images.map((f) => ({ ...f, kind: "image" }))];
+const queue = [
+  ...videos.map((f) => ({ ...f, kind: "video" })),
+  ...images.map((f) => ({ ...f, kind: "image" })),
+  ...models.map((f) => ({ ...f, kind: "model" })),
+];
 let done = 0;
 
 async function worker(id) {
   const tmp = path.join(OUT, `.probe-${id}`);
   while (queue.length) {
     const job = queue.shift();
-    const r = job.kind === "video" ? await doVideo(job.rel, job, tmp) : await doImage(job.rel, job);
+    const r =
+      job.kind === "video"
+        ? await doVideo(job.rel, job, tmp)
+        : job.kind === "model"
+          ? await doModel(job.rel)
+          : await doImage(job.rel);
     if (r) index[job.rel] = r;
     done++;
     process.stdout.write(`\r   processing ${done}/${jobs.length}   `);

@@ -43,15 +43,32 @@ export function useScrollReset() {
 
   useEffect(() => {
     if (hash) {
-      // let the new page paint first, then find the anchor
       const id = hash.slice(1);
-      const t = window.setTimeout(() => {
+      // The target page renders progressively (route transitions, lazy media),
+      // so wait until the anchor actually exists before jumping to it — a fixed
+      // timeout fires too early when coming from another route. Then re-anchor
+      // a few times, because images settling below the fold keep shifting the
+      // target's absolute position.
+      let tries = 0;
+      let anchored = false;
+      const jump = () => {
         const el = document.getElementById(id);
-        if (el) {
-          lenis ? lenis.scrollTo(el, { offset: -72 }) : el.scrollIntoView({ behavior: "smooth" });
+        if (!el) return false;
+        lenis
+          ? lenis.scrollTo(el, { offset: -72, duration: 1.1 })
+          : el.scrollIntoView({ behavior: "smooth" });
+        return true;
+      };
+      const t = window.setInterval(() => {
+        tries++;
+        if (!anchored && jump()) {
+          anchored = true;
+          // nudge again as late-loading media above the anchor reflows the page
+          [800, 1900].forEach((ms) => window.setTimeout(() => jump(), ms));
         }
-      }, 120);
-      return () => window.clearTimeout(t);
+        if (anchored || tries > 40) window.clearInterval(t);
+      }, 90);
+      return () => window.clearInterval(t);
     }
     lenis ? lenis.scrollTo(0, { immediate: true }) : window.scrollTo(0, 0);
   }, [pathname, hash]);

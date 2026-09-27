@@ -17,12 +17,14 @@
     "motion": "^11.15.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.28.0"
+    "react-router-dom": "^6.28.0",
+    "three": "^0.186.1"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0",
     "@types/react": "^18.3.17",
     "@types/react-dom": "^18.3.5",
+    "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "^4.3.4",
     "ffmpeg-static": "^5.2.0",
     "playwright": "^1.63.0",

@@ -1,9 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { MediaItem } from "../lib/media";
-import { isVideo } from "../lib/media";
+import { isVideo, isModel } from "../lib/media";
 import { EASE } from "../lib/motion";
 import { mmss } from "../lib/utils";
+
+// three.js + the mesh only download when someone actually opens a model
+const ModelCanvas = lazy(() => import("./ModelCanvas").then((m) => ({ default: m.ModelCanvas })));
 
 export type LightboxItem = { item: MediaItem; title?: string; meta?: string };
 
@@ -70,7 +73,8 @@ export function Lightbox({
   if (!current) return null;
   // narrow once so the union members are reachable below
   const vid = isVideo(current.item) ? current.item : null;
-  const img = vid ? null : current.item;
+  const mdl = !vid && isModel(current.item) ? current.item : null;
+  const img = !vid && !mdl ? current.item : null;
 
   return (
     <AnimatePresence>
@@ -127,6 +131,21 @@ export function Lightbox({
                     }}
                     className="max-h-[68vh] w-auto max-w-full rounded-xl bg-black object-contain shadow-2xl"
                   />
+                ) : mdl ? (
+                  <div className="relative aspect-video w-[min(92vw,1180px)] overflow-hidden rounded-xl bg-ink-2 shadow-2xl">
+                    <Suspense
+                      fallback={
+                        <div className="absolute inset-0 grid place-items-center bg-ink-2">
+                          <span className="mono animate-pulse text-dim">Loading 3D model…</span>
+                        </div>
+                      }
+                    >
+                      <ModelCanvas src={mdl.src} className="absolute inset-0 h-full w-full" />
+                    </Suspense>
+                    <span className="mono pointer-events-none absolute top-3 left-3 z-10 rounded-full border border-line-2 bg-ink/70 px-3 py-1.5 text-dim backdrop-blur-md">
+                      3D model · drag to orbit
+                    </span>
+                  </div>
                 ) : (
                   <img
                     src={img!.src}

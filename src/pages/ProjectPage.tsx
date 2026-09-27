@@ -8,7 +8,7 @@ import { Reveal } from "../components/Reveal";
 import { site } from "../data/site";
 import { EASE } from "../lib/motion";
 import { mmss } from "../lib/utils";
-import { isVideo } from "../lib/media";
+import { isVideo, isModel } from "../lib/media";
 
 export default function ProjectPage() {
   const { slug = "" } = useParams();
@@ -32,7 +32,12 @@ export default function ProjectPage() {
   const lbItems: LightboxItem[] = media.map((m) => ({
     item: m,
     title: project.title,
-    meta: m.kind === "video" ? `${mmss(m.duration)} · video` : `${m.width}×${m.height}`,
+    meta:
+      m.kind === "video"
+        ? `${mmss(m.duration)} · video`
+        : isModel(m)
+          ? "interactive 3D model"
+          : `${m.width}×${m.height}`,
   }));
 
   return (
@@ -98,7 +103,7 @@ export default function ProjectPage() {
             <button
               onClick={() => setLb(0)}
               data-cursor="media"
-              data-cursor-label={isVideo(cover) ? "Play" : "View"}
+              data-cursor-label={isVideo(cover) ? "Play" : isModel(cover) ? "View 3D" : "View"}
               className="group relative block w-full"
             >
               {isVideo(cover) ? (
@@ -158,7 +163,7 @@ export default function ProjectPage() {
               className="group relative overflow-hidden rounded-xl bg-ink-3"
             >
               <img
-                src={m.kind === "video" ? m.poster : m.src}
+                src={m.kind === "video" ? m.poster : isModel(m) ? (m.card ?? m.poster) : m.src}
                 alt={`${project.title} ${i + 1}`}
                 loading="lazy"
                 className="w-full transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]"
@@ -172,6 +177,14 @@ export default function ProjectPage() {
                 {isVideo(m) && (
                   <span className="mono rounded-full border border-line-2 bg-ink/70 px-2.5 py-1.5 text-dim backdrop-blur-md">
                     {mmss(m.duration)}
+                  </span>
+                )}
+                {isModel(m) && (
+                  <span className="mono flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/15 px-2.5 py-1.5 text-accent backdrop-blur-md">
+                    <svg viewBox="0 0 24 24" className="h-3 w-3">
+                      <path d="M12 2.6 21 7.4v9.2L12 21.4 3 16.6V7.4z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+                    </svg>
+                    3D
                   </span>
                 )}
               </span>

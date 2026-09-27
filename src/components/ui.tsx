@@ -59,9 +59,10 @@ export function Btn({ children, to, href, onClick, variant = "solid", className 
     "mono group relative inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-full px-6 py-3.5 transition-colors duration-400";
 
   const styles = {
+    // sweep rises behind the label, so the text must stay dark over the fill
     solid: "bg-fg text-ink hover:text-ink",
     accent: "bg-accent text-ink hover:text-ink",
-    ghost: "border border-line-2 text-fg hover:border-fg",
+    ghost: "border border-line-2 text-fg hover:border-fg hover:text-ink",
   }[variant];
 
   const inner = (
