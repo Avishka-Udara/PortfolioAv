@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { SectionHead, Arrow } from "../components/ui";
 import { Reveal } from "../components/Reveal";
+import { Breadcrumbs } from "../components/Breadcrumbs";
 import { capabilities, site } from "../data/site";
 import { EASE } from "../lib/motion";
 import { cn } from "../lib/utils";
@@ -28,10 +29,21 @@ export default function Contact() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   useSeo({
-    title: "Contact",
+    title: "Contact Avishka Udara",
     description:
-      "Start a project with Avishka Udara — brand identity, motion, 3D or video. Open for freelance, remote work and ongoing partnerships. Replies via email or Telegram.",
+      "Start your next project with Avishka Udara. Professional visual design, motion graphics and 3D animation services. Available for freelance work worldwide with fast turnaround. Get in touch via email or Telegram.",
     path: "/contact",
+    keywords: [
+      "Contact Avishka Udara",
+      "Hire Visual Designer",
+      "Motion Graphics Services",
+      "3D Animation Services", 
+      "Brand Design Services",
+      "Freelance Designer Contact",
+      "Creative Services Sri Lanka",
+      "Design Project Quote",
+      "Motion Design Consultation"
+    ]
   });
 
   const toggle = (n: string) =>
@@ -104,6 +116,7 @@ export default function Contact() {
   return (
     <>
       <header className="container-x pt-32 pb-10 sm:pt-40 sm:pb-14">
+        <Breadcrumbs />
         <SectionHead
           eyebrow="Contact"
           title={

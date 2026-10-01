@@ -420,11 +420,24 @@ function CategoryStrip() {
 
 export default function Home() {
   useSeo({
-    title: undefined,
+    title: undefined, // Use the default title from index.html
     description:
       "Avishka Udara — visual designer, motion artist and 3D generalist from Sri Lanka. Brand identity, social campaigns, motion promos, CGI and long-term creative support. Open for freelance.",
     path: "/",
     jsonLd: personJsonLd(),
+    keywords: [
+      "Avishka Udara",
+      "Visual Designer Sri Lanka", 
+      "Motion Graphics Designer",
+      "3D Artist Sri Lanka",
+      "Brand Identity Designer",
+      "Logo Designer",
+      "Creative Director",
+      "Freelance Designer Sri Lanka",
+      "Motion Artist",
+      "After Effects Expert",
+      "Blender Artist"
+    ]
   });
 
   return (

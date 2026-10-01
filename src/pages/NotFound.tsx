@@ -4,7 +4,11 @@ import { site } from "../data/site";
 import { useSeo } from "../hooks/useSeo";
 
 export default function NotFound() {
-  useSeo({ title: "Not found", noindex: true });
+  useSeo({ 
+    title: "Page Not Found", 
+    description: "The page you're looking for doesn't exist. Return to Avishka Udara's portfolio to explore visual design, motion graphics and 3D animation work.",
+    noindex: true 
+  });
 
   return (
     <section className="container-x grid min-h-[100svh] place-items-center py-32 text-center">

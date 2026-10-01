@@ -1,8 +1,54 @@
 User-agent: *
 Allow: /
 
-# only the optimised web-ready assets live under /media
+# Crawl delay to be respectful to servers
+Crawl-delay: 1
+
+# Optimized assets - allow images but disallow large video/model files
+Allow: /media/*.jpg$
+Allow: /media/*.jpeg$
+Allow: /media/*.png$
+Allow: /media/*.webp$
+Allow: /media/*.gif$
 Disallow: /media/*.mp4$
 Disallow: /media/*.obj$
 
-# Sitemap: set SITE_URL to enable
+# Prevent indexing of development and system files
+Disallow: /node_modules/
+Disallow: /src/
+Disallow: /.git/
+Disallow: /.vscode/
+Disallow: /.kiro/
+Disallow: /scripts/
+Disallow: /dist/
+Disallow: /*.log$
+Disallow: /*.json$
+Disallow: /*.ts$
+Disallow: /*.tsx$
+
+# Allow all important pages for SEO
+Allow: /work/*
+Allow: /about
+Allow: /contact
+
+# Special directives for major search engines
+User-agent: Googlebot
+Crawl-delay: 0
+Allow: /
+
+User-agent: Bingbot
+Crawl-delay: 0
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+Sitemap: https://avishkaudara.com/sitemap-index.xml
+Sitemap: https://avishkaudara.com/sitemap.xml
+Sitemap: https://avishkaudara.com/sitemap-images.xml

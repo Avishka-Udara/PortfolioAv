@@ -11,6 +11,7 @@
     "media": "node scripts/process-media.mjs",
     "media:check": "node scripts/validate-media.mjs",
     "seo": "node scripts/sitemap.mjs",
+    "seo:audit": "node scripts/seo-audit.mjs",
     "shots": "node scripts/shots.mjs"
   },
   "dependencies": {

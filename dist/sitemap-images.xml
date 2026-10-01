@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://avishkaudara.com/</loc>
+    <image:image>
+      <image:loc>https://avishkaudara.com/media/og.jpg</image:loc>
+      <image:title>Avishka Udara - Visual Designer Portfolio</image:title>
+      <image:caption>Professional visual designer and motion artist portfolio from Sri Lanka</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://avishkaudara.com/work</loc>
+    <image:image>
+      <image:loc>https://avishkaudara.com/media/og.jpg</image:loc>
+      <image:title>Avishka Udara Work Portfolio</image:title>
+      <image:caption>Visual design, motion graphics and 3D animation portfolio</image:caption>
+    </image:image>
+  </url>
+</urlset>

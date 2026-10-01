@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { SectionHead, Btn, Arrow, CountUp } from "../components/ui";
 import { Reveal, RevealGroup, revealItem } from "../components/Reveal";
+import { Breadcrumbs } from "../components/Breadcrumbs";
 import { capabilities, clients, process, site, stats } from "../data/site";
 import { EASE } from "../lib/motion";
 import { Link } from "react-router-dom";
@@ -31,16 +32,28 @@ const timeline = [
 
 export default function About() {
   useSeo({
-    title: "About",
+    title: "About Avishka Udara",
     description:
-      "Nine years of multidisciplinary design — Avishka Udara works across brand identity, campaigns, motion, 3D and post-production as a long-term creative partner for founders and marketing teams.",
+      "Meet Avishka Udara, a multidisciplinary visual designer from Sri Lanka with 9+ years experience. Specializing in brand identity, motion graphics, 3D animation and creative campaigns for startups, hospitals and NGOs worldwide.",
     path: "/about",
     type: "profile",
+    keywords: [
+      "About Avishka Udara",
+      "Visual Designer Biography",
+      "Motion Artist Sri Lanka", 
+      "Creative Professional Background",
+      "Designer Experience",
+      "Brand Designer Story",
+      "Motion Graphics Expert",
+      "3D Animation Specialist",
+      "Sri Lankan Creative"
+    ]
   });
 
   return (
     <>
       <header className="container-x pt-32 pb-12 sm:pt-40 sm:pb-16">
+        <Breadcrumbs />
         <SectionHead
           eyebrow="About"
           title={

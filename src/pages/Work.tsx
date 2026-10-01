@@ -6,6 +6,7 @@ import { SetTile } from "../components/SetTile";
 import { Lightbox, type LightboxItem } from "../components/Lightbox";
 import { SectionHead, Btn, Arrow } from "../components/ui";
 import { Reveal } from "../components/Reveal";
+import { Breadcrumbs } from "../components/Breadcrumbs";
 import {
   categoriesWithWork,
   categoryMeta,
@@ -54,12 +55,27 @@ export default function Work() {
   );
 
   useSeo({
-    title: filter === "all" ? "Work" : categoryMeta[filter as CategoryId].label,
+    title: filter === "all" ? "Portfolio" : `${categoryMeta[filter as CategoryId].label} Portfolio`,
     description:
       filter === "all"
-        ? "The full portfolio of Avishka Udara — brand identity, campaigns, 2D/3D animation, CGI, video and product design, filtered by discipline."
-        : `${categoryMeta[filter as CategoryId].label} — ${categoryMeta[filter as CategoryId].blurb}`,
+        ? "Browse Avishka Udara's complete portfolio — brand identity, campaigns, 2D/3D animation, CGI, video and product design across 240+ projects for 60+ clients worldwide."
+        : `${categoryMeta[filter as CategoryId].label} by Avishka Udara — ${categoryMeta[filter as CategoryId].blurb}`,
     path: filter === "all" ? "/work" : `/work?f=${filter}`,
+    keywords: filter === "all" ? [
+      "Avishka Udara Portfolio",
+      "Visual Design Portfolio",
+      "Motion Graphics Portfolio", 
+      "3D Animation Projects",
+      "Brand Identity Cases",
+      "Logo Design Portfolio",
+      "Creative Work Sri Lanka"
+    ] : [
+      `Avishka Udara ${categoryMeta[filter as CategoryId].label}`,
+      `${categoryMeta[filter as CategoryId].label} Portfolio`,
+      `${categoryMeta[filter as CategoryId].label} Sri Lanka`,
+      "Visual Designer Work",
+      "Creative Projects"
+    ]
   });
 
   /** the lightbox is scoped to one project's media at a time, so next/prev
@@ -92,6 +108,7 @@ export default function Work() {
   return (
     <>
       <header className="container-x pt-32 pb-10 sm:pt-40 sm:pb-14">
+        <Breadcrumbs />
         <SectionHead
           eyebrow={`${projects.length} projects`}
           title={

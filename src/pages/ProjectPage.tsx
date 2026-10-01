@@ -5,6 +5,7 @@ import { bySlug, byRecency, categoryMeta, resolveMedia } from "../data/projects"
 import { Lightbox, type LightboxItem } from "../components/Lightbox";
 import { Btn, Arrow, Eyebrow } from "../components/ui";
 import { Reveal } from "../components/Reveal";
+import { Breadcrumbs } from "../components/Breadcrumbs";
 import { site } from "../data/site";
 import { EASE } from "../lib/motion";
 import { mmss } from "../lib/utils";
@@ -30,11 +31,20 @@ export default function ProjectPage() {
   useSeo(
     project
       ? {
-          title: project.title,
-          description: project.summary,
+          title: `${project.title} — ${project.client}`,
+          description: `${project.summary} A ${categoryMeta[project.category].label.toLowerCase()} project by Avishka Udara for ${project.client} (${project.year}). View detailed case study and project gallery.`,
           path: `/work/${project.slug}`,
           image: cover?.kind === "video" ? cover.poster : cover?.kind === "image" ? cover.src : cover?.poster,
           type: "article",
+          keywords: [
+            "Avishka Udara",
+            `${project.title}`,
+            `${project.client} Design`,
+            `${categoryMeta[project.category].label} Project`,
+            "Visual Design Case Study",
+            "Portfolio Project",
+            ...project.disciplines
+          ],
           jsonLd: workJsonLd({
             title: project.title,
             description: project.summary,
@@ -69,6 +79,7 @@ export default function ProjectPage() {
     <article>
       {/* ------------------------------------------------------------- hero */}
       <header className="container-x pt-28 pb-8 sm:pt-36 sm:pb-10">
+        <Breadcrumbs />
         <Reveal>
           <Link
             to="/work"

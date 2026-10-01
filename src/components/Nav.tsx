@@ -6,6 +6,56 @@ import { cn } from "../lib/utils";
 import { EASE } from "../lib/motion";
 import { startScroll, stopScroll } from "../hooks/useSmoothScroll";
 
+/**
+ * Add navigation structured data for SEO
+ */
+function addNavigationStructuredData() {
+  // Remove existing navigation structured data
+  const existing = document.querySelector('script[data-navigation="true"]');
+  if (existing) {
+    existing.remove();
+  }
+
+  const navigationStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "SiteNavigationElement",
+    "name": "Main Navigation",
+    "url": "https://avishkaudara.com",
+    "hasPart": [
+      {
+        "@type": "SiteNavigationElement", 
+        "name": "Home",
+        "description": "Avishka Udara portfolio homepage",
+        "url": "https://avishkaudara.com/"
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "name": "Work", 
+        "description": "Portfolio of visual design and motion graphics projects",
+        "url": "https://avishkaudara.com/work"
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "name": "About",
+        "description": "About Avishka Udara - visual designer and motion artist", 
+        "url": "https://avishkaudara.com/about"
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "name": "Contact",
+        "description": "Contact Avishka Udara for design projects",
+        "url": "https://avishkaudara.com/contact"
+      }
+    ]
+  };
+
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.setAttribute('data-navigation', 'true');
+  script.textContent = JSON.stringify(navigationStructuredData, null, 2);
+  document.head.appendChild(script);
+}
+
 function Wordmark() {
   return (
     <Link
@@ -34,6 +84,11 @@ export function Nav() {
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (y) => setSolid(y > 24));
+
+  // Add navigation structured data on mount
+  useEffect(() => {
+    addNavigationStructuredData();
+  }, []);
 
   // close the sheet on route change
   useEffect(() => setOpen(false), [pathname, hash]);
